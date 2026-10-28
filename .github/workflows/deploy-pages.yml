@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -37,8 +37,6 @@ jobs:
           node --check /tmp/jarvis-module.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
