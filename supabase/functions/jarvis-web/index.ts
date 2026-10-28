@@ -10,7 +10,7 @@ Deno.serve((req: Request) => {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "microphone=(self)",
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline'; connect-src 'self' https://srtxzvvjtuuiwledxxok.supabase.co wss://srtxzvvjtuuiwledxxok.supabase.co https://generativelanguage.googleapis.com wss://generativelanguage.googleapis.com; img-src 'self' data:; font-src 'self' data:; media-src 'self' blob:; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline'; connect-src 'self' https://srtxzvvjtuuiwledxxok.supabase.co wss://srtxzvvjtuuiwledxxok.supabase.co; img-src 'self' data:; font-src 'self' data:; media-src 'self' blob:; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
   };
   return new Response(req.method === "HEAD" ? null : html, { status: 200, headers });
 });
