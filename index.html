@@ -246,7 +246,7 @@ async function startLive(){
           liveActive=true;$('voiceBtn').disabled=false;$('voiceBtn').textContent='🎙 Stop live-gesprek';$('stopLiveBtn').style.display='inline-block';$('livePill').classList.add('show');
           setStatus('Live gesprek actief','var(--green)');showNotice('Live gesprek actief. Praat natuurlijk; Jarvis kan je onderbrekingen verwerken.','ok');
           const ctx='We studeren nu. Modus: '+modeNames[mode]+'. Vak: '+(currentSubject||'herken dit uit het gesprek')+'. Leerstof: '+(currentMaterial||'geen aparte tekst toegevoegd')+'. Begin in het Nederlands en stel eventueel een korte vraag om het onderwerp te bepalen.';
-          liveSocket.send(JSON.stringify({realtimeInput:{text:ctx}});
+          liveSocket.send(JSON.stringify({realtimeInput:{text:ctx}}));
         }catch(e){showNotice('Microfoontoegang geweigerd of niet beschikbaar. Controleer de toestemming van Chrome.','error');stopLive();}
       }
       const sc=data.serverContent;
