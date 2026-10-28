@@ -3,14 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827">
-<title>AI Jarvis — jouw studiecoach</title>
+<meta name="theme-color" content="#0b1020">
+<title>AI Jarvis — persoonlijke studiecoach</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2d;--panel2:#182239;--line:#2b3854;--text:#f4f7ff;--muted:#9eacc8;--orange:#ff9e43;--blue:#8bb7ff;--green:#6ee7b7}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172542 0%,var(--bg) 58%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
-button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--text);background:var(--panel2)}button:hover{border-color:var(--orange)}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;max-width:1600px;margin:auto}.sidebar{padding:24px 16px;border-right:1px solid var(--line);background:#0b1120cc}.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 24px}.orb{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#ffb15c,#ff773d);display:grid;place-items:center;color:#17111a;font-weight:900;font-size:22px;box-shadow:0 0 30px #ff9e4333}.brand strong{font-size:19px;letter-spacing:.2px}.brand small{display:block;color:var(--muted);font-size:12px}.navlabel{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);padding:12px}.navbtn{display:block;width:100%;text-align:left;background:transparent;border-color:transparent;margin:3px 0;color:#dce5fa}.navbtn.active{background:#222e47;border-color:#36445f}.sidebarfoot{margin-top:auto;padding:18px 10px;color:var(--muted);font-size:12px}.sidebar{display:flex;flex-direction:column}.main{min-width:0;padding:28px clamp(16px,4vw,56px) 48px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:32px}.eyebrow{color:var(--orange);font-size:12px;text-transform:uppercase;letter-spacing:1.7px;font-weight:750}.topbar h1{font-size:clamp(25px,3vw,36px);line-height:1.15;margin:6px 0}.sub{color:var(--muted);margin:0}.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#11192a;padding:9px 12px;border-radius:999px;font-size:12px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:#fbbf24}.hero{border:1px solid #394660;background:linear-gradient(120deg,#1a2742,#141c30 65%,#241f32);border-radius:24px;padding:clamp(20px,4vw,34px);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;border:1px solid #ffffff0b;right:-80px;top:-90px;box-shadow:0 0 0 28px #ffffff04,0 0 0 58px #ffffff03}.hero h2{font-size:clamp(24px,3vw,34px);line-height:1.2;margin:10px 0}.hero p{max-width:640px;color:#bdc9e1}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.primary{background:var(--orange);border-color:var(--orange);color:#20140b;font-weight:800}.primary:hover{background:#ffb15c;color:#20140b}.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 30px}.tile,.section,.chatbox{background:#111a2d;border:1px solid var(--line);border-radius:18px;padding:18px}.tile{min-height:116px;text-align:left}.tile .emoji{font-size:23px}.tile strong{display:block;margin-top:12px}.tile small{color:var(--muted)}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.sectionhead h3{margin:0;font-size:18px}.sectionhead span{color:var(--muted);font-size:12px}.chatbox{padding:0;overflow:hidden}.chathead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.chathead strong{display:block}.chathead small{color:var(--muted)}.messages{padding:22px;min-height:200px;max-height:420px;overflow:auto;display:flex;flex-direction:column;gap:14px}.msg{max-width:min(720px,95%);padding:13px 15px;border-radius:16px;background:#1a2740;border:1px solid #2b3a58;white-space:pre-wrap}.msg.user{align-self:flex-end;background:#342b27;border-color:#69452f}.msg .who{font-size:11px;color:var(--orange);font-weight:800;margin-bottom:4px}.composer{padding:14px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-end}.composer textarea{resize:vertical;min-height:48px;max-height:140px;flex:1;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px}.hint{padding:0 18px 14px;color:var(--muted);font-size:12px}.lower{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:18px}.empty{color:var(--muted);font-size:14px}.notice{border:1px solid #6b542c;background:#302817;color:#ffe0a0;border-radius:12px;padding:12px 14px;margin-top:18px;font-size:13px}.modalback{position:fixed;inset:0;background:#020617cc;display:none;place-items:center;padding:16px;z-index:5}.modal{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px}.modal input{width:100%;margin:7px 0 14px;background:#0b1222;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px}.modal h2{margin-top:0}.modal p{color:var(--muted);font-size:14px}.mobilebrand{display:none}
-@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.mobilebrand{display:flex;align-items:center;gap:10px}.main{padding:18px 14px 32px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.lower{grid-template-columns:1fr}.topbar{margin-bottom:20px}.hero{border-radius:18px}.messages{padding:15px;min-height:180px}.composer{flex-wrap:wrap}.composer textarea{flex-basis:100%}}
+:root{color-scheme:dark;--bg:#0b1020;--panel:#111a2d;--panel2:#19243b;--line:#2b3957;--text:#f4f7ff;--muted:#9eacc8;--orange:#ff9e43;--green:#6ee7b7;--yellow:#fbbf24;--red:#fca5a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#182641 0%,var(--bg) 58%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--text);background:var(--panel2);transition:border-color .15s,transform .15s}button:hover{border-color:var(--orange)}button:active{transform:translateY(1px)}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--orange);outline-offset:2px}button:disabled{opacity:.6;cursor:not-allowed}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh;max-width:1680px;margin:auto}.sidebar{padding:22px 15px;border-right:1px solid var(--line);background:#0b1120dc;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 24px}.orb{width:42px;height:42px;flex:0 0 42px;border-radius:14px;background:linear-gradient(135deg,#ffb15c,#ff773d);display:grid;place-items:center;color:#17111a;font-weight:900;font-size:22px;box-shadow:0 0 30px #ff9e4333}.brand strong{font-size:19px;letter-spacing:.2px}.brand small{display:block;color:var(--muted);font-size:12px}.navlabel{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);padding:12px}.navbtn{display:block;width:100%;text-align:left;background:transparent;border-color:transparent;margin:3px 0;color:#dce5fa}.navbtn.active{background:#222e47;border-color:#36445f}.sidebarfoot{margin-top:auto;padding:18px 10px;color:var(--muted);font-size:12px}
+.main{min-width:0;padding:26px clamp(15px,4vw,54px) 48px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:26px}.eyebrow{color:var(--orange);font-size:12px;text-transform:uppercase;letter-spacing:1.7px;font-weight:800}.topbar h1{font-size:clamp(25px,3vw,36px);line-height:1.15;margin:6px 0}.sub{color:var(--muted);margin:0}.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#11192a;padding:9px 12px;border-radius:999px;font-size:12px;color:var(--muted);white-space:nowrap}.dot{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
+.hero{border:1px solid #394660;background:linear-gradient(120deg,#1a2742,#141c30 65%,#241f32);border-radius:24px;padding:clamp(20px,4vw,32px);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;border:1px solid #ffffff0b;right:-80px;top:-90px;box-shadow:0 0 0 28px #ffffff04,0 0 0 58px #ffffff03;pointer-events:none}.hero h2{font-size:clamp(24px,3vw,34px);line-height:1.2;margin:10px 0}.hero p{max-width:690px;color:#bdc9e1}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.primary{background:var(--orange);border-color:var(--orange);color:#20140b;font-weight:850}.primary:hover{background:#ffb15c;color:#20140b}.danger{border-color:#74414a;background:#321d28}.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:16px 0 26px}.tile{min-height:110px;text-align:left;background:#111a2d;border:1px solid var(--line);border-radius:17px;padding:16px}.tile .emoji{font-size:22px}.tile strong{display:block;margin-top:10px}.tile small{color:var(--muted)}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.sectionhead h3{margin:0;font-size:18px}.sectionhead span{color:var(--muted);font-size:12px}.chatbox,.section{background:#111a2d;border:1px solid var(--line);border-radius:18px}.chatbox{padding:0;overflow:hidden}.chathead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.chathead strong{display:block}.chathead small{color:var(--muted)}.messages{padding:20px;min-height:210px;max-height:460px;overflow:auto;display:flex;flex-direction:column;gap:13px}.msg{max-width:min(760px,96%);padding:13px 15px;border-radius:15px;background:#1a2740;border:1px solid #2b3a58;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user{align-self:flex-end;background:#342b27;border-color:#69452f}.msg .who{font-size:11px;color:var(--orange);font-weight:850;letter-spacing:.5px;margin-bottom:4px}.composer{padding:14px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:flex-end}.composer textarea{resize:vertical;min-height:48px;max-height:160px;flex:1;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px}.hint{padding:0 18px 14px;color:var(--muted);font-size:12px}.controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.controls label{color:var(--muted);font-size:12px}.controls select,.controls input{background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;max-width:100%}.controls .subject-select{width:158px}.lower{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:16px}.section{padding:18px;min-width:0}.empty{color:var(--muted);font-size:14px}.historyitem{display:block;width:100%;text-align:left;margin:6px 0;background:#0e1728}.historyitem small{display:block;color:var(--muted);font-size:12px}.notice{border:1px solid #6b542c;background:#302817;color:#ffe0a0;border-radius:12px;padding:12px 14px;margin:16px 0;font-size:13px}.notice a{color:#ffcf78}.notice.ok{border-color:#28664e;background:#102e26;color:#b9f8d9}.notice.error{border-color:#74414a;background:#321d28;color:#ffd0d5}.modalback{position:fixed;inset:0;background:#020617d9;display:none;place-items:center;padding:16px;z-index:5}.modal{width:min(460px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 25px 90px #0008}.modal input{width:100%;margin:7px 0 14px;background:#0b1222;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px}.modal h2{margin-top:0}.modal p{color:var(--muted);font-size:14px}.modal label{font-size:13px;color:#c9d5ea}.mobilebrand{display:none}.livepill{display:none;font-size:12px;color:#b9f8d9;background:#102e26;border:1px solid #28664e;border-radius:999px;padding:7px 10px}.livepill.show{display:inline-flex;align-items:center;gap:7px}.tiny{font-size:12px;color:var(--muted)}.actions label.filelabel{border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer}.subject-note{font-size:12px;color:var(--muted);margin:0 0 12px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.mobilebrand{display:flex;align-items:center;gap:10px;margin-bottom:7px}.main{padding:17px 13px 30px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lower{grid-template-columns:1fr}.topbar{margin-bottom:19px}.hero{border-radius:18px}.messages{padding:14px;min-height:185px}.composer{flex-wrap:wrap}.composer textarea{flex-basis:100%}.controls .subject-select{width:138px}.status{font-size:11px}.chathead{padding:13px}.chathead #newBtn{padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -19,25 +22,32 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid
   <div class="brand"><div class="orb">J</div><div><strong>AI Jarvis</strong><small>Jouw persoonlijke studiecoach</small></div></div>
   <div class="navlabel">Werkruimte</div>
   <button class="navbtn active" data-view="home">⌂ &nbsp; Overzicht</button>
-  <button class="navbtn" data-view="study">✦ &nbsp; Praat met Jarvis</button>
-  <button class="navbtn" data-view="quizzes">▤ &nbsp; Quiz & oefentoets</button>
-  <button class="navbtn" data-view="cards">▣ &nbsp; Flashcards</button>
-  <button class="navbtn" data-view="notes">✎ &nbsp; Samenvattingen</button>
+  <button class="navbtn" data-view="tutor">✦ &nbsp; Praat met Jarvis</button>
+  <button class="navbtn" data-mode="quiz">▤ &nbsp; Quiz maken</button>
+  <button class="navbtn" data-mode="cards">▣ &nbsp; Flashcards</button>
+  <button class="navbtn" data-mode="exam">▧ &nbsp; Oefentoets</button>
+  <button class="navbtn" data-mode="summary">✎ &nbsp; Samenvatting</button>
   <div class="navlabel">Persoonlijk</div>
   <button class="navbtn" id="historyBtn">◷ &nbsp; Gespreksgeschiedenis</button>
   <button class="navbtn" id="accountBtn">⚙ &nbsp; Account & instellingen</button>
-  <div class="sidebarfoot">AI Jarvis · Studie slimmer, niet langer.<br>Je voortgang hoort bij jouw account.</div>
+  <div class="sidebarfoot">AI Jarvis · Studie slimmer, niet langer.<br>Cloudopslag is privé per account.</div>
 </aside>
 <main class="main">
   <div class="topbar">
-    <div><div class="mobilebrand"><div class="orb">J</div><strong>AI Jarvis</strong></div><div class="eyebrow">Jouw AI-leermaatje</div><h1 id="greeting">Waar gaan we vandaag aan werken?</h1><p class="sub">Leg het uit, stel extra vragen en oefen tot je het snapt.</p></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Instellen vereist</span></div><button id="loginBtn">Inloggen</button></div>
+    <div>
+      <div class="mobilebrand"><div class="orb">J</div><strong>AI Jarvis</strong></div>
+      <div class="eyebrow">Jouw AI-leermaatje</div>
+      <h1 id="greeting">Waar gaan we vandaag aan werken?</h1>
+      <p class="sub">Leg het uit, stel extra vragen en oefen tot je het snapt.</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Verbinding controleren…</span></div><button id="loginBtn">Inloggen</button></div>
   </div>
   <section class="hero">
     <div class="eyebrow">JARVIS STUDIEMODUS</div>
     <h2>Niet alleen antwoorden.<br>Écht begrijpen.</h2>
-    <p>Jarvis helpt je de stof stap voor stap begrijpen, ontdekt waar je vastloopt en stelt een passende oefening voor. Begin met je vak, onderwerp of toetsweek.</p>
-    <div class="actions"><button class="primary" id="startBtn">✦ Start een studiesessie</button><button id="voiceBtn">🎙 Praat met Jarvis</button><button id="materialBtn">＋ Voeg leerstof toe</button></div>
+    <p>Jarvis herkent het vak en onderwerp uit je vraag, helpt je stap voor stap, en stelt oefeningen voor als je klaar bent met uitleg.</p>
+    <div class="actions"><button class="primary" id="startBtn">✦ Start een studiesessie</button><button id="voiceBtn">🎙 Praat live met Jarvis</button><button id="materialBtn">＋ Voeg leerstof toe</button></div>
+    <div class="actions" style="margin-top:12px"><span id="livePill" class="livepill"><span class="dot" style="background:var(--green)"></span>Live microfoon actief</span><span class="tiny" id="accountLabel">Log in om gesprekken te bewaren in de cloud.</span></div>
   </section>
   <div class="tiles">
     <button class="tile" data-mode="quiz"><span class="emoji">🧠</span><strong>Maak een quiz</strong><small>Test wat je al weet</small></button>
@@ -46,44 +56,270 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid
     <button class="tile" data-mode="summary"><span class="emoji">✨</span><strong>Samenvatting</strong><small>Hoofd- en bijzaken</small></button>
   </div>
   <div class="sectionhead"><h3>Jouw studiesessie</h3><span id="sessionLabel">Nieuwe sessie</span></div>
+  <div class="controls">
+    <label for="subject">Vak</label>
+    <select id="subject" class="subject-select">
+      <option value="">Herken automatisch</option><option>Nederlands</option><option>Engels</option><option>Wiskunde</option><option>Biologie</option><option>Natuurkunde</option><option>Scheikunde</option><option>Geschiedenis</option><option>Aardrijkskunde</option><option>Economie</option><option>Duits</option><option>Frans</option><option>Maatschappijleer</option><option>Techniek</option><option>Anders</option>
+    </select>
+    <span class="tiny" id="modeLabel">Modus: persoonlijke uitleg</span>
+  </div>
   <section class="chatbox" id="chatbox">
-    <div class="chathead"><div><strong>Jarvis</strong><small id="chatSubtitle">Begin met wat je wilt leren</small></div><button id="newBtn">Nieuwe sessie</button></div>
+    <div class="chathead"><div><strong>Jarvis</strong><small id="chatSubtitle">Begin met wat je wilt leren</small></div><div style="display:flex;gap:8px"><button id="stopLiveBtn" class="danger" style="display:none">Stop live</button><button id="newBtn">Nieuwe sessie</button></div></div>
     <div class="messages" id="messages" aria-live="polite"><div class="msg"><div class="who">JARVIS</div>Hoi! Welk vak heb je, en welk onderwerp moet je kennen? Als je het nog niet precies weet, vertel me wanneer je toets is en dan zoeken we samen uit waar je moet beginnen.</div></div>
     <div class="composer"><textarea id="prompt" rows="2" placeholder="Bijv. ‘Ik heb morgen biologie over cellen en ik snap osmose niet…’"></textarea><button id="sendBtn" class="primary">Verstuur ↗</button></div>
-    <div class="hint">Tip: je kunt ook je leerdoelen of tekst uit je boek plakken. Deel geen wachtwoorden of privégegevens.</div>
+    <div class="hint">Enter = versturen · Shift+Enter = nieuwe regel. Voeg geen wachtwoorden of schoolinloggegevens toe.</div>
   </section>
   <div class="lower">
-    <section class="section"><div class="sectionhead"><h3>Verder leren</h3><span>Op dit apparaat</span></div><div id="recent" class="empty">Je recente sessies verschijnen hier zodra je begint.</div></section>
-    <section class="section"><div class="sectionhead"><h3>Leerstof toevoegen</h3><span>Tekst of bestand</span></div><p class="empty">Plak een stuk tekst uit je lesmateriaal of kies een tekstbestand om ermee te oefenen.</p><textarea id="material" rows="3" placeholder="Plak hier je leerstof, leerdoelen of aantekeningen…" style="width:100%;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px"></textarea><div class="actions"><label for="fileInput" style="border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer">Kies tekstbestand</label><input id="fileInput" type="file" accept=".txt,.md,.csv,text/plain,text/markdown" hidden><button id="useMaterial" class="primary">Gebruik deze leerstof</button></div><div id="fileLabel" class="empty"></div></section>
+    <section class="section"><div class="sectionhead"><h3>Verder leren</h3><span id="historyStatus">Lokale geschiedenis</span></div><div id="recent" class="empty">Je sessies verschijnen hier zodra je begint.</div></section>
+    <section class="section"><div class="sectionhead"><h3>Leerstof toevoegen</h3><span>Tekst of .txt</span></div><p class="empty">Plak leerdoelen, aantekeningen of tekst uit je boek. Jarvis gebruikt dit als context voor de sessie.</p><textarea id="material" rows="4" placeholder="Plak hier je leerstof, leerdoelen of aantekeningen…" style="width:100%;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px"></textarea><div class="actions"><label for="fileInput" class="filelabel">Kies tekstbestand</label><input id="fileInput" type="file" accept=".txt,.md,.csv,text/plain,text/markdown" hidden><button id="useMaterial" class="primary">Gebruik deze leerstof</button></div><div id="fileLabel" class="empty"></div></section>
   </div>
-  <div class="notice" id="setupNotice"><strong>Technische setup nog bezig.</strong> Dit is de eerste webversie. Login, cloudgeschiedenis en echte AI-/spraakverbinding worden pas actief nadat de veilige Supabase- en AI-koppelingen zijn ingesteld. Deze pagina doet niet alsof de AI al verbonden is.</div>
+  <div class="notice" id="setupNotice"><strong>AI-koppeling wordt gecontroleerd.</strong> De site laat zien welke functies al verbonden zijn. De Gemini API-sleutel hoort uitsluitend in Supabase Secrets, nooit in GitHub of de browser.</div>
 </main>
 </div>
-<div class="modalback" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle"><div class="modal"><h2 id="loginTitle">Inloggen bij AI Jarvis</h2><p>Je account wordt gekoppeld zodra Supabase is ingesteld.</p><label for="email">E-mailadres</label><input id="email" type="email" autocomplete="email" placeholder="jij@voorbeeld.nl"><label for="password">Wachtwoord</label><input id="password" type="password" autocomplete="current-password" placeholder="Minimaal 8 tekens"><div class="actions"><button class="primary" id="authSubmit">Verder</button><button id="closeModal">Sluiten</button></div><p id="authMessage"></p></div></div>
-<script>
-const $=id=>document.getElementById(id);
-const messages=$('messages'); let mode='tutor', materialText='', recognition=null, speaking=false;
-const localKey='ai-jarvis-local-v1';
-function localLoad(){try{return JSON.parse(localStorage.getItem(localKey)||'[]')}catch{return []}}
-function localSave(item){const arr=localLoad();arr.unshift(item);localStorage.setItem(localKey,JSON.stringify(arr.slice(0,8)));renderRecent()}
-function renderRecent(){const arr=localLoad();$('recent').innerHTML=arr.length?arr.map(x=>'<button style="display:block;width:100%;text-align:left;margin:6px 0" data-recent="'+encodeURIComponent(x.text)+'"><strong>'+escapeHtml(x.mode)+'</strong><br><small>'+escapeHtml(x.text.slice(0,85))+'</small></button>').join(''):'Je recente sessies verschijnen hier zodra je begint.'}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function addMessage(who,text){const el=document.createElement('div');el.className='msg '+(who==='Jij'?'user':'');const title=document.createElement('div');title.className='who';title.textContent=who.toUpperCase();const body=document.createElement('div');body.textContent=text;el.append(title,body);messages.append(el);messages.scrollTop=messages.scrollHeight}
-function setMode(m){mode=m;const labels={tutor:'Persoonlijke uitleg',quiz:'Quiz maken',cards:'Flashcards maken',exam:'Oefentoets maken',summary:'Samenvatting maken'};$('chatSubtitle').textContent=labels[m]||labels.tutor;$('sessionLabel').textContent=labels[m]||'Nieuwe sessie';$('prompt').focus();addMessage('Jarvis','Prima, we richten deze sessie op: '+labels[m]+'. Vertel me welk vak en onderwerp je wilt gebruiken. De AI-koppeling wordt nog ingesteld; ik kan je verzoek alvast klaarzetten.')}
-function send(){const text=$('prompt').value.trim();if(!text)return;$('prompt').value='';addMessage('Jij',text);localSave({mode:mode,text:text,at:new Date().toISOString()});$('statusText').textContent='AI-koppeling nog niet actief';$('statusDot').style.background='#fbbf24';addMessage('Jarvis','Ik heb je vraag lokaal op dit apparaat bewaard. De veilige AI-backend is nog niet gekoppeld, dus ik ga niet doen alsof ik je vraag al door een AI heb laten beantwoorden. Zodra de verbinding is ingesteld, kan Jarvis hier inhoudelijk op reageren.');}
-$('sendBtn').onclick=send;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
-$('startBtn').onclick=()=>{setMode('tutor');$('prompt').focus()};document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(b.dataset.view==='study')$('prompt').focus();else if(b.dataset.view==='quizzes')setMode('quiz');else if(b.dataset.view==='cards')setMode('cards');else if(b.dataset.view==='notes')setMode('summary');else window.scrollTo({top:0,behavior:'smooth'})});
-$('newBtn').onclick=()=>{messages.innerHTML='';addMessage('Jarvis','Nieuwe sessie gestart. Welk vak en onderwerp gaan we aanpakken?');$('prompt').value='';setMode('tutor')};
-$('historyBtn').onclick=()=>{renderRecent();$('recent').scrollIntoView({behavior:'smooth',block:'center'})};
-$('accountBtn').onclick=$('loginBtn').onclick=()=>{$('loginModal').style.display='grid';$('email').focus()};
-$('closeModal').onclick=()=>{$('loginModal').style.display='none'};
-$('authSubmit').onclick=()=>{$('authMessage').textContent='Login kan nog niet worden uitgevoerd: Supabase Auth is nog niet gekoppeld. Er is geen account aangemaakt.'};
-$('materialBtn').onclick=()=>{$('material').focus();$('material').scrollIntoView({behavior:'smooth',block:'center'})};
-$('useMaterial').onclick=()=>{materialText=$('material').value.trim();if(!materialText){$('material').focus();return}addMessage('Jij','Gebruik deze leerstof voor '+mode+':\n'+materialText.slice(0,4000));$('prompt').value='Gebruik de toegevoegde leerstof voor '+({quiz:'een quiz met antwoorden en uitleg',cards:'flashcards met vraag en antwoord',exam:'een oefentoets met nakijkmodel',summary:'een duidelijke samenvatting',tutor:'uitleg en controlevragen'}[mode]||'studiehulp')+'.';$('prompt').focus()};
-$('fileInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>1000000){$('fileLabel').textContent='Bestand is groter dan 1 MB. Plak liever alleen de relevante tekst.';return}materialText=await f.text();$('material').value=materialText;$('fileLabel').textContent='Gelezen: '+f.name+' ('+f.size+' bytes). Klik op “Gebruik deze leerstof”.'};
-$('voiceBtn').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addMessage('Jarvis','Spraakherkenning wordt niet ondersteund in deze browser. Je kunt wel typen.');return}if(recognition){recognition.stop();recognition=null;$('voiceBtn').textContent='🎙 Praat met Jarvis';return}recognition=new SR();recognition.lang='nl-NL';recognition.interimResults=false;recognition.onresult=e=>{$('prompt').value=e.results[0][0].transcript;$('prompt').focus()};recognition.onerror=()=>addMessage('Jarvis','Ik kon de microfoon niet gebruiken. Controleer de browsertoestemming en probeer opnieuw.');recognition.onend=()=>{$('voiceBtn').textContent='🎙 Praat met Jarvis';recognition=null};recognition.start();$('voiceBtn').textContent='Luisteren… (klik om te stoppen)'};
-messages.addEventListener('click',e=>{const b=e.target.closest('[data-recent]');if(b){$('prompt').value=decodeURIComponent(b.dataset.recent);$('prompt').focus()}});
-renderRecent();
+<div class="modalback" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle"><div class="modal"><h2 id="loginTitle">Welkom bij AI Jarvis</h2><p id="authIntro">Log in om je gesprekken en voortgang privé op te slaan en Jarvis te gebruiken.</p><label for="email">E-mailadres</label><input id="email" type="email" autocomplete="email" placeholder="jij@voorbeeld.nl"><label for="password">Wachtwoord</label><input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="Minimaal 8 tekens"><div class="actions"><button class="primary" id="authSubmit">Inloggen</button><button id="toggleSignup">Account maken</button><button id="closeModal">Sluiten</button></div><p id="authMessage" role="status"></p></div></div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://srtxzvvjtuuiwledxxok.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable__9Va8cM8t3dAn31q9x2gCw_M97Wbsbt';
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+const $ = id => document.getElementById(id);
+const localKey = 'ai-jarvis-local-v2';
+const modeNames = { tutor:'Persoonlijke uitleg', quiz:'Quiz maken', cards:'Flashcards', exam:'Oefentoets', summary:'Samenvatting' };
+const artifactKinds = { quiz:'quiz', cards:'flashcards', exam:'practice_exam', summary:'summary' };
+const knownSubjects = {
+  'Nederlands':['nederlands','werkwoordspelling','bijvoeglijk naamwoord','persoonsvorm','zinsontleding','literatuur','leesvaardigheid'],
+  'Engels':['engels','english','present perfect','past simple','irregular verbs','woordjes engels'],
+  'Wiskunde':['wiskunde','vergelijking','breuken','procenten','kwadratische','formule','pytagoras','pythagoras','grafiek','rekenen'],
+  'Biologie':['biologie','celkern','mitochondri','osmose','fotosynthese','spijsvertering','erfelijkheid','ecosysteem'],
+  'Natuurkunde':['natuurkunde','kracht','snelheid','versnelling','spanning','stroomsterkte','weerstand','energie'],
+  'Scheikunde':['scheikunde','molecuul','atoom','reactievergelijking','periodiek systeem','ph-waarde','verbranding'],
+  'Geschiedenis':['geschiedenis','wereldoorlog','middeleeuwen','industriele revolutie','industriële revolutie','bronanalyse'],
+  'Aardrijkskunde':['aardrijkskunde','klimaat','bevolking','continent','erosie','platentektoniek','landschap'],
+  'Economie':['economie','vraag en aanbod','inflatie','btw','winst','verlies','markt','budget'],
+  'Duits':['duits','deutsch','der die das','perfekt','präteritum'],
+  'Frans':['frans','français','passe compose','passé composé','être','avoir'],
+  'Maatschappijleer':['maatschappijleer','democratie','rechtsstaat','grondwet','politiek','verkiezingen'],
+  'Techniek':['techniek','elektriciteit','3d printen','constructie','motor']
+};
+let authSession = null, currentUser = null, activeSessionId = null, mode = 'tutor', messages = [], liveSocket = null, liveStream = null, liveAudio = null, liveSource = null, liveProcessor = null, liveActive = false, playbackCursor = 0, playbackNodes = [], liveInputText = '', liveOutputText = '', liveUserBubble = null, liveAssistantBubble = null, authMode = 'login', currentSubject = '', currentMaterial = '';
+function safeLocalLoad(){ try { const result = JSON.parse(localStorage.getItem(localKey) || '[]'); return Array.isArray(result) ? result : []; } catch { return []; } }
+function safeLocalSave(item){ try { const arr=safeLocalLoad(); arr.unshift(item); localStorage.setItem(localKey,JSON.stringify(arr.slice(0,10))); } catch {} renderHistory(); }
+function esc(value){ return String(value == null ? '' : value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function setStatus(text, color){ $('statusText').textContent=text; $('statusDot').style.background=color||'var(--yellow)'; }
+function showNotice(text,kind){ const n=$('setupNotice'); n.className='notice'+(kind?' '+kind:''); n.textContent=text; }
+function appendBubble(role,text,klass){ const el=document.createElement('div'); el.className='msg'+(role==='user'?' user':'')+(klass?' '+klass:''); const who=document.createElement('div'); who.className='who'; who.textContent=role==='user'?'JIJ':'JARVIS'; const body=document.createElement('div'); body.className='body'; body.textContent=text; el.append(who,body); $('messages').append(el); $('messages').scrollTop=$('messages').scrollHeight; return el; }
+function updateBubble(el,text){ if(!el)return; const body=el.querySelector('.body'); if(body)body.textContent=text; $('messages').scrollTop=$('messages').scrollHeight; }
+function clearVisibleChat(){ $('messages').innerHTML=''; }
+function renderMessages(){ clearVisibleChat(); if(!messages.length){appendBubble('assistant','Hoi! Welk vak heb je, en welk onderwerp moet je kennen? Vertel me wat je al snapt en waar je vastloopt.');return;} messages.forEach(m=>appendBubble(m.role==='user'?'user':'assistant',m.text)); }
+function detectSubject(text){ const selected=$('subject').value; if(selected && selected!=='Anders')return selected; if(selected==='Anders')return 'Anders'; const hay=' '+String(text||'').toLowerCase()+' '; for(const [name,words] of Object.entries(knownSubjects)){ if(words.some(w=>hay.includes(w.toLowerCase()))) return name; } return ''; }
+function updateMode(next){ mode=modeNames[next]?next:'tutor'; $('chatSubtitle').textContent=modeNames[mode]; $('modeLabel').textContent='Modus: '+modeNames[mode].toLowerCase(); $('sessionLabel').textContent=activeSessionId?'Bewaarde sessie':'Nieuwe sessie'; document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode)); $('prompt').focus(); }
+function makeTitle(){ const first=messages.find(m=>m.role==='user' && m.text && m.text.trim()); const text=first?first.text.trim():'Nieuwe studiesessie'; return (currentSubject?currentSubject+' · ':'')+text.slice(0,70); }
+function persistLocal(){ try{ const arr=safeLocalLoad(); arr.unshift({id:activeSessionId||null,title:makeTitle(),subject:currentSubject,mode:mode,messages:messages.slice(-80),material:currentMaterial,last_active_at:new Date().toISOString()}); localStorage.setItem(localKey,JSON.stringify(arr.filter((x,i,a)=>i===0 || x.id!==arr[0]?.id).slice(0,10)); }catch{} renderHistory(); }
+async function persistSession(){
+  persistLocal();
+  if(!currentUser)return null;
+  const payload={user_id:currentUser.id,title:makeTitle(),subject:currentSubject||'',mode:mode,material:currentMaterial||'',messages:messages.slice(-80),last_active_at:new Date().toISOString()};
+  let result;
+  if(activeSessionId){
+    result=await supabase.from('study_sessions').update(payload).eq('id',activeSessionId).eq('user_id',currentUser.id).select('id').maybeSingle();
+    if(result.error && (result.error.code==='PGRST116')) activeSessionId=null;
+  }
+  if(!activeSessionId){
+    result=await supabase.from('study_sessions').insert(payload).select('id').single();
+    if(result.error){console.warn('Session save failed',result.error.message);return null;}
+    activeSessionId=result.data.id;
+  }else if(result?.error){console.warn('Session update failed',result.error.message);return null;}
+  $('sessionLabel').textContent='Automatisch opgeslagen';
+  renderHistory();
+  return activeSessionId;
+}
+async function loadHistory(){
+  if(!currentUser){renderHistory();return;}
+  const {data,error}=await supabase.from('study_sessions').select('id,title,subject,mode,messages,material,last_active_at,created_at').order('last_active_at',{ascending:false}).limit(10);
+  if(error){$('historyStatus').textContent='Cloudgeschiedenis niet beschikbaar'; console.warn(error.message); renderHistory();return;}
+  $('historyStatus').textContent='Gesynchroniseerd';
+  renderHistory(data||[]);
+}
+function renderHistory(remoteItems){
+  const root=$('recent');
+  if(Array.isArray(remoteItems)){
+    if(!remoteItems.length){root.innerHTML='<div class="empty">Nog geen cloudsessies. Stel je eerste vraag om te beginnen.</div>';return;}
+    root.innerHTML='';
+    remoteItems.forEach(item=>{
+      const btn=document.createElement('button');btn.className='historyitem';
+      const title=document.createElement('strong');title.textContent=item.title||'Studiesessie';
+      const small=document.createElement('small');small.textContent=(item.subject?item.subject+' · ':'')+(modeNames[item.mode]||item.mode||'Studie')+' · '+new Date(item.last_active_at||item.created_at||Date.now()).toLocaleDateString('nl-NL');
+      btn.append(title,small);btn.onclick=()=>openRemoteSession(item);root.append(btn);
+    });
+    return;
+  }
+  const items=safeLocalLoad();
+  if(!items.length){root.innerHTML='<div class="empty">Je sessies verschijnen hier zodra je begint.</div>';return;}
+  root.innerHTML='';
+  items.slice(0,6).forEach((item)=>{
+    const btn=document.createElement('button');btn.className='historyitem';
+    const title=document.createElement('strong');title.textContent=item.title||'Lokale sessie';
+    const small=document.createElement('small');small.textContent=(item.subject?item.subject+' · ':'')+(modeNames[item.mode]||'Studie')+' · lokaal op dit apparaat';
+    btn.append(title,small);btn.onclick=()=>openLocalSession(item);root.append(btn);
+  });
+}
+function openLocalSession(item){ activeSessionId=null; currentSubject=item.subject||''; currentMaterial=item.material||''; mode=item.mode||'tutor'; messages=Array.isArray(item.messages)?item.messages:[]; $('subject').value=currentSubject; $('material').value=currentMaterial; updateMode(mode); renderMessages(); $('sessionLabel').textContent='Lokale sessie'; }
+function openRemoteSession(item){ activeSessionId=item.id; currentSubject=item.subject||''; currentMaterial=item.material||''; mode=item.mode||'tutor'; messages=Array.isArray(item.messages)?item.messages:[]; $('subject').value=currentSubject; $('material').value=currentMaterial; updateMode(mode); renderMessages(); $('sessionLabel').textContent='Bewaarde sessie'; $('chatbox').scrollIntoView({behavior:'smooth',block:'start'}); }
+function newSession(){ if(liveActive)stopLive(); activeSessionId=null; currentSubject=''; currentMaterial=''; messages=[]; $('subject').value=''; $('material').value=''; updateMode('tutor'); renderMessages(); $('sessionLabel').textContent='Nieuwe sessie'; }
+function addToConversation(role,text){ messages.push({role,text,at:new Date().toISOString()}); if(messages.length>80)messages=messages.slice(-80); appendBubble(role==='user'?'user':'assistant',text); }
+async function readFunctionError(error){ if(error?.context && typeof error.context.json==='function'){try{const b=await error.context.json();if(b?.error)return b.error;}catch{}} return error?.message||'De aanvraag is mislukt.'; }
+async function sendMessage(){
+  const text=$('prompt').value.trim(); if(!text)return;
+  $('prompt').value='';
+  const guessed=detectSubject(text+' '+currentMaterial); if(guessed)currentSubject=guessed; $('sessionLabel').textContent='Bezig…';
+  addToConversation('user',text); persistLocal();
+  if(!currentUser){ addToConversation('assistant','Log in om Jarvis echt te gebruiken en gesprekken te bewaren in de cloud. Je vraag staat voorlopig alleen lokaal op dit apparaat.'); $('sessionLabel').textContent='Alleen lokaal bewaard'; $('loginModal').style.display='grid'; return; }
+  $('sendBtn').disabled=true; $('sendBtn').textContent='Denkt…'; setStatus('Jarvis denkt mee','var(--orange)');
+  await persistSession();
+  try{
+    const {data,error}=await supabase.functions.invoke('jarvis-chat',{body:{messages:messages.map(m=>({role:m.role,text:m.text})),mode:mode,subject:currentSubject,material:currentMaterial}});
+    if(error)throw new Error(await readFunctionError(error));
+    if(!data || !data.answer)throw new Error(data?.error||'Geen antwoord ontvangen.');
+    addToConversation('assistant',data.answer);
+    await persistSession();
+    const kind=artifactKinds[mode];
+    if(kind && activeSessionId){
+      const {error:artError}=await supabase.from('study_artifacts').insert({user_id:currentUser.id,session_id:activeSessionId,kind:kind,title:(currentSubject?currentSubject+' · ':'')+modeNames[mode],content:data.answer,metadata:{mode:mode,subject:currentSubject}});
+      if(artError)console.warn('Artifact save failed',artError.message);
+    }
+    setStatus('Verbonden met Jarvis','var(--green)'); showNotice('Jarvis is gekoppeld. Je gesprekken worden voor je account opgeslagen.','ok');
+  }catch(e){
+    const message=e?.message||'Onbekende fout.';
+    addToConversation('assistant','Ik kon nu geen AI-antwoord ophalen. '+message);
+    setStatus(message.includes('GEMINI_API_KEY')||message.toLowerCase().includes('gemini is nog niet gekoppeld')?'Gemini-sleutel ontbreekt':'AI tijdelijk niet beschikbaar','var(--yellow)');
+    if(message.toLowerCase().includes('gemini')||message.toLowerCase().includes('secret'))showNotice('De veilige functie is online, maar Gemini heeft nog een API-sleutel nodig. In Supabase → Edge Functions → Secrets moet GEMINI_API_KEY worden ingesteld. Plaats die sleutel niet in GitHub of hier in de chat.','error');
+    await persistSession();
+  }finally{$('sendBtn').disabled=false;$('sendBtn').textContent='Verstuur ↗';$('prompt').focus();}
+}
+function liveSystemText(){ return 'Je bent AI Jarvis, een Nederlandse studiecoach voor middelbare scholieren.\nPraat natuurlijk, helder en bemoedigend. Hou gesproken antwoorden meestal kort, leg moeilijke concepten stap voor stap uit en stel één controlevraag wanneer dat helpt.\nDetecteer vak en onderwerp automatisch als dat kan; vraag kort door als het onduidelijk is.\nHelp met leren voor toetsweken, maar verzin geen details over het lesmateriaal dat niet is aangeleverd.\nVraag nooit om wachtwoorden of onnodige persoonlijke gegevens.'; }
+function bytesToB64(bytes){ let binary=''; const step=0x8000; for(let i=0;i<bytes.length;i+=step)binary+=String.fromCharCode.apply(null,bytes.subarray(i,Math.min(i+step,bytes.length))); return btoa(binary); }
+function downsampleTo16k(floatData,sourceRate){
+  if(sourceRate===16000){const out=new Int16Array(floatData.length);for(let i=0;i<floatData.length;i++){const s=Math.max(-1,Math.min(1,floatData[i]));out[i]=s<0?s*0x8000:s*0x7fff;}return out;}
+  const ratio=sourceRate/16000; const outLength=Math.floor(floatData.length/ratio); const out=new Int16Array(outLength);
+  for(let i=0;i<outLength;i++){const start=Math.floor(i*ratio),end=Math.min(Math.floor((i+1)*ratio),floatData.length);let sum=0;for(let j=start;j<end;j++)sum+=floatData[j];const avg=sum/Math.max(1,end-start);const s=Math.max(-1,Math.min(1,avg));out[i]=s<0?s*0x8000:s*0x7fff;}
+  return out;
+}
+function stopPlayback(){ playbackNodes.forEach(node=>{try{node.stop();}catch{}});playbackNodes=[];playbackCursor=liveAudio?liveAudio.currentTime:0; }
+function playAudioB64(b64){
+  if(!liveAudio)return;
+  const binary=atob(b64);const count=Math.floor(binary.length/2);const pcm=new Int16Array(count);
+  for(let i=0;i<count;i++){let n=binary.charCodeAt(i*2)|(binary.charCodeAt(i*2+1)<<8);if(n>32767)n-=65536;pcm[i]=n;}
+  const buffer=liveAudio.createBuffer(1,count,24000);const channel=buffer.getChannelData(0);
+  for(let i=0;i<count;i++)channel[i]=pcm[i]/32768;
+  const source=liveAudio.createBufferSource();source.buffer=buffer;source.connect(liveAudio.destination);
+  const start=Math.max(liveAudio.currentTime+0.025,playbackCursor);source.start(start);playbackCursor=start+buffer.duration;playbackNodes.push(source);source.onended=()=>{playbackNodes=playbackNodes.filter(n=>n!==source);};
+}
+async function startLive(){
+  if(liveActive){stopLive();return;}
+  if(!currentUser){$('loginModal').style.display='grid';$('authMessage').textContent='Log in om de beveiligde live-verbinding te starten.';return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket){showNotice('Deze browser ondersteunt geen live-microfoon. Gebruik typen of open Jarvis in Chrome via HTTPS.','error');return;}
+  $('voiceBtn').disabled=true;$('voiceBtn').textContent='Verbinden…';
+  try{
+    const {data,error}=await supabase.functions.invoke('jarvis-live-token',{body:{}});
+    if(error)throw new Error(await readFunctionError(error));
+    if(!data?.token)throw new Error(data?.error||'Er kwam geen live-token terug.');
+    liveSocket=new WebSocket('wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(data.token));
+    liveSocket.onopen=()=>{const text=liveSystemText();liveSocket.send(JSON.stringify({setup:{model:'models/gemini-3.8-live',responseModalities:['AUDIO'],inputAudioTranscription:{},outputAudioTranscription:{},sessionResumption:{},systemInstruction:{parts:[{text:text}]}}}));};
+    liveSocket.onmessage=async event=>{
+      let data;try{data=JSON.parse(event.data);}catch{return;}
+      if(data.error){showNotice('Live API meldt een fout: '+(data.error.message||'onbekende fout'),'error');stopLive();return;}
+      if(data.setupComplete){
+        try{
+          liveStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+          liveAudio=new (window.AudioContext||window.webkitAudioContext)();await liveAudio.resume();playbackCursor=liveAudio.currentTime;
+          liveSource=liveAudio.createMediaStreamSource(liveStream);liveProcessor=liveAudio.createScriptProcessor(4096,1,1);
+          liveProcessor.onaudioprocess=e=>{
+            if(!liveActive||!liveSocket||liveSocket.readyState!==WebSocket.OPEN)return;
+            const input=e.inputBuffer.getChannelData(0);const pcm=downsampleTo16k(input,liveAudio.sampleRate);const bytes=new Uint8Array(pcm.buffer);
+            liveSocket.send(JSON.stringify({realtimeInput:{audio:{data:bytesToB64(bytes),mimeType:'audio/pcm;rate=16000'}}}));
+            const output=e.outputBuffer.getChannelData(0);output.fill(0);
+          };
+          liveSource.connect(liveProcessor);liveProcessor.connect(liveAudio.destination);
+          liveActive=true;$('voiceBtn').disabled=false;$('voiceBtn').textContent='🎙 Stop live-gesprek';$('stopLiveBtn').style.display='inline-block';$('livePill').classList.add('show');
+          setStatus('Live gesprek actief','var(--green)');showNotice('Live gesprek actief. Praat natuurlijk; Jarvis kan je onderbrekingen verwerken.','ok');
+          const ctx='We studeren nu. Modus: '+modeNames[mode]+'. Vak: '+(currentSubject||'herken dit uit het gesprek')+'. Leerstof: '+(currentMaterial||'geen aparte tekst toegevoegd')+'. Begin in het Nederlands en stel eventueel een korte vraag om het onderwerp te bepalen.';
+          liveSocket.send(JSON.stringify({realtimeInput:{text:ctx}});
+        }catch(e){showNotice('Microfoontoegang geweigerd of niet beschikbaar. Controleer de toestemming van Chrome.','error');stopLive();}
+      }
+      const sc=data.serverContent;
+      if(sc){
+        if(sc.interrupted)stopPlayback();
+        if(sc.inputTranscription?.text){liveInputText+=sc.inputTranscription.text;if(!liveUserBubble)liveUserBubble=appendBubble('user','');updateBubble(liveUserBubble,liveInputText);}
+        if(sc.outputTranscription?.text){liveOutputText+=sc.outputTranscription.text;if(!liveAssistantBubble)liveAssistantBubble=appendBubble('assistant','');updateBubble(liveAssistantBubble,liveOutputText);}
+        if(sc.modelTurn?.parts)for(const part of sc.modelTurn.parts)if(part.inlineData?.data)playAudioB64(part.inlineData.data);
+        if(sc.turnComplete){
+          if(liveInputText.trim())messages.push({role:'user',text:liveInputText.trim(),at:new Date().toISOString()});
+          if(liveOutputText.trim())messages.push({role:'assistant',text:liveOutputText.trim(),at:new Date().toISOString()});
+          if(liveInputText.trim()||liveOutputText.trim()){const guessed=detectSubject(liveInputText+' '+currentMaterial);if(guessed)currentSubject=guessed;persistSession();}
+          liveInputText='';liveOutputText='';liveUserBubble=null;liveAssistantBubble=null;
+        }
+      }
+    };
+    liveSocket.onerror=()=>{setStatus('Live verbinding fout','var(--red)');showNotice('De live-verbinding kon niet worden gestart. Controleer de Gemini API-sleutel en probeer opnieuw.','error');};
+    liveSocket.onclose=()=>{if(liveActive)stopLive();};
+    await new Promise((resolve,reject)=>{const started=Date.now();const check=()=>{if(liveActive)return resolve();if(!liveSocket||liveSocket.readyState===WebSocket.CLOSED)return reject(new Error('De live-verbinding werd gesloten voordat de microfoon startte.'));if(Date.now()-started>18000)return reject(new Error('Time-out bij het verbinden met de Live API.'));setTimeout(check,200);};check();});
+  }catch(e){
+    stopLive();const message=e?.message||'Live verbinding mislukt.';showNotice(message+' Controleer of GEMINI_API_KEY in Supabase Secrets staat.','error');setStatus('Live niet verbonden','var(--yellow)');
+  }finally{$('voiceBtn').disabled=false;if(!liveActive)$('voiceBtn').textContent='🎙 Praat live met Jarvis';}
+}
+function stopLive(){
+  liveActive=false;try{if(liveProcessor){liveProcessor.disconnect();liveProcessor.onaudioprocess=null;}}catch{}try{if(liveSource)liveSource.disconnect();}catch{}try{if(liveStream)liveStream.getTracks().forEach(t=>t.stop());}catch{}try{if(liveSocket){liveSocket.onclose=null;liveSocket.close();}}catch{}try{if(liveAudio)liveAudio.close();}catch{}
+  liveSocket=null;liveStream=null;liveAudio=null;liveSource=null;liveProcessor=null;stopPlayback();$('voiceBtn').disabled=false;$('voiceBtn').textContent='🎙 Praat live met Jarvis';$('stopLiveBtn').style.display='none';$('livePill').classList.remove('show');
+}
+async function applyAuthSession(session){
+  const previousId=currentUser?.id||null;authSession=session||null;currentUser=session?.user||null;
+  if(currentUser){
+    $('loginBtn').textContent='Uitloggen';$('accountLabel').textContent='Ingelogd als '+(currentUser.email||'leerling');$('greeting').textContent='Welkom terug bij Jarvis.';setStatus('Ingelogd','var(--green)');
+    if(previousId!==currentUser.id){activeSessionId=null;await loadHistory();}
+    const {data:pref}=await supabase.from('user_preferences').select('display_name,preferred_subjects').eq('user_id',currentUser.id).maybeSingle();
+    if(pref?.display_name)$('greeting').textContent='Welkom terug, '+pref.display_name+'.';
+  }else{
+    $('loginBtn').textContent='Inloggen';$('accountLabel').textContent='Log in om je geschiedenis veilig in de cloud te bewaren.';$('greeting').textContent='Waar gaan we vandaag aan werken?';setStatus('Niet ingelogd','var(--yellow)');activeSessionId=null;renderHistory();
+  }
+}
+function openAuth(){ $('authMessage').textContent='';$('loginModal').style.display='grid';$('email').focus(); }
+function setAuthMode(next){authMode=next;$('authSubmit').textContent=next==='signup'?'Account maken':'Inloggen';$('toggleSignup').textContent=next==='signup'?'Ik heb al een account':'Account maken';$('loginTitle').textContent=next==='signup'?'Maak je Jarvis-account':'Welkom bij AI Jarvis';$('authIntro').textContent=next==='signup'?'Maak een account om cloudgeschiedenis en voortgang te bewaren. Gebruik een e-mailadres waar je toegang toe hebt.':'Log in om je gesprekken privé op te slaan en Jarvis te gebruiken.';}
+async function submitAuth(){
+  const email=$('email').value.trim(),password=$('password').value;
+  if(!email||password.length<8){$('authMessage').textContent='Vul een geldig e-mailadres en een wachtwoord van minimaal 8 tekens in.';return;}
+  $('authSubmit').disabled=true;$('authMessage').textContent='Bezig…';
+  try{
+    if(authMode==='signup'){
+      const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:window.location.href}});
+      if(error)throw error;
+      if(data.session){$('loginModal').style.display='none';await applyAuthSession(data.session);$('authMessage').textContent='';}
+      else $('authMessage').textContent='Controleer je e-mail om de registratie te bevestigen. Daarna kun je inloggen.';
+    }else{
+      const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;$('loginModal').style.display='none';await applyAuthSession(data.session);$('authMessage').textContent='';
+    }
+  }catch(e){$('authMessage').textContent=e?.message||'Inloggen is niet gelukt. Controleer je gegevens en probeer opnieuw.';}
+  finally{$('authSubmit').disabled=false;}
+}
+$('authSubmit').onclick=submitAuth;$('toggleSignup').onclick=()=>setAuthMode(authMode==='signup'?'login':'signup');$('closeModal').onclick=()=>{$('loginModal').style.display='none';};$('loginBtn').onclick=async()=>{if(currentUser){await supabase.auth.signOut();return;}openAuth();};$('accountBtn').onclick=()=>{if(currentUser){alert('Account: '+currentUser.email+'\nJe gesprekken worden met je eigen account gekoppeld.\nUitloggen kan via de knop rechtsboven.');}else openAuth();};
+$('sendBtn').onclick=sendMessage;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+$('startBtn').onclick=()=>{$('prompt').focus();$('chatbox').scrollIntoView({behavior:'smooth',block:'start'});};
+$('voiceBtn').onclick=startLive;$('stopLiveBtn').onclick=stopLive;
+$('newBtn').onclick=newSession;
+$('materialBtn').onclick=()=>{$('material').focus();$('material').scrollIntoView({behavior:'smooth',block:'center'});};
+$('useMaterial').onclick=()=>{const text=$('material').value.trim();if(!text){$('material').focus();return;}currentMaterial=text.slice(0,12000);const guessed=detectSubject(text);if(guessed){currentSubject=guessed;if(!$('subject').value)$('subject').value=guessed;}const info='Leerstof toegevoegd ('+currentMaterial.length+' tekens). Je volgende vraag gebruikt deze tekst als context.';showNotice(info,'ok');$('prompt').value=$('prompt').value||'Help mij deze leerstof begrijpen. Wat zijn de belangrijkste punten?';$('prompt').focus();};
+$('fileInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>1000000){$('fileLabel').textContent='Bestand groter dan 1 MB. Plak alleen de relevante tekst in het vak.';return;}if(!/\.(txt|md|csv)$/i.test(f.name)){ $('fileLabel').textContent='Gebruik een tekstbestand (.txt, .md of .csv).';return;}const text=await f.text();$('material').value=text;$('fileLabel').textContent='Gelezen: '+f.name+' ('+f.size+' bytes). Klik op “Gebruik deze leerstof”.';};
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{updateMode(b.dataset.mode);$('chatbox').scrollIntoView({behavior:'smooth',block:'start'});});
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(b.dataset.view==='tutor'){$('prompt').focus();$('chatbox').scrollIntoView({behavior:'smooth',block:'start'});}else window.scrollTo({top:0,behavior:'smooth'});});
+$('historyBtn').onclick=async()=>{await loadHistory();$('recent').scrollIntoView({behavior:'smooth',block:'center'});};
+$('subject').onchange=()=>{if($('subject').value && $('subject').value!=='Anders')currentSubject=$('subject').value;else if(!$('subject').value)currentSubject='';};
+supabase.auth.onAuthStateChange((_event,session)=>{queueMicrotask(()=>applyAuthSession(session));});
+const {data:{session}}=await supabase.auth.getSession();await applyAuthSession(session);
+updateMode('tutor');
+if(currentUser){await loadHistory();}else renderHistory();
+showNotice('Database, accounts en beveiligde AI-functies zijn gekoppeld. Stel nog GEMINI_API_KEY in via Supabase → Edge Functions → Secrets om de echte AI-antwoorden en Live-spraak te activeren.','error');
 </script>
-</body></html>
+</body>
+</html>
