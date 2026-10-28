@@ -1,66 +1,69 @@
 # AI Jarvis — persoonlijke studiecoach
 
-AI Jarvis is a Dutch-language, browser-based study coach for school Chromebooks; no local app installation is required.
+AI Jarvis is een Nederlandstalige studiecoach die je in de browser kunt openen, ook op een school-Chromebook zonder app-installatie.
 
-## Open the website
+## Open de website
 
-**Live website:** https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/
+**Website:** https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/
 
-**Direct preview fallback:** https://srtxzvvjtuuiwledxxok.supabase.co/functions/v1/jarvis-web
+**Directe preview:** https://srtxzvvjtuuiwledxxok.supabase.co/functions/v1/jarvis-web
 
-GitHub Pages deployment is enabled and a recent workflow run completed successfully. The workflow checks the inline JavaScript syntax, uploads the static page, and deploys to GitHub Pages when `index.html` or the deployment workflow changes.
+GitHub Pages is ingeschakeld. Een recente GitHub Actions-run voltooide de controle van JavaScript, upload en publicatie succesvol.
 
-## What's in this repository
+## In de repository
 
-- `index.html`: responsive study-coach UI, sign-in/sign-up, chat, subject-detection hints, study modes, text material input, session history, realtime history updates, and a browser client for Gemini Live API voice.
-- `supabase/functions/jarvis-web/index.ts`: public, read-only HTML preview endpoint.
-- `supabase/functions/jarvis-chat/index.ts`: authenticated server-side Gemini text tutor endpoint.
-- `supabase/functions/jarvis-live-token/index.ts`: authenticated ephemeral-token endpoint for Gemini Live API. The long-lived Gemini key never goes to the browser.
-- `supabase/migrations/`: schema and security SQL matching the changes applied to the cloud project.
+- `index.html`: responsive studiecoach, e-mail login/registratie, vakherkenning, studie-modussen, tekstmateriaal, sessiegeschiedenis, realtime geschiedenisupdates en browser-spraakherkenning/voorlezen.
+- `supabase/functions/jarvis-web/index.ts`: publieke, alleen-lezen HTML-preview.
+- `supabase/functions/jarvis-chat/index.ts`: geauthenticeerde AI-chatfunctie voor een OpenAI-compatibele Chat Completions API.
+- `supabase/functions/jarvis-live-token/index.ts`: tijdelijke compatibiliteitsfunctie. De browser gebruikt voorlopig Web Speech API in plaats van een apart live-audiomodel.
+- `supabase/migrations/`: database- en beveiligingsmigraties die ook op het cloudproject zijn toegepast.
 
-## Supabase project
+## Supabase
 
-- Organization: `Ai Jarvis`
+- Organisatie: `Ai Jarvis`
 - Project: `Ai Jarvis Learning`
-- Ref: `srtxzvvjtuuiwledxxok`
-- Region: `eu-west-1`
-- Project URL: https://srtxzvvjtuuiwledxxok.supabase.co
+- Project-ref: `srtxzvvjtuuiwledxxok`
+- Regio: `eu-west-1`
+- Project-URL: https://srtxzvvjtuuiwledxxok.supabase.co
 
-### One-time secret configuration
+De tabellen `study_sessions`, `study_artifacts` en `user_preferences` hebben Row Level Security. Ingelogde gebruikers mogen alleen hun eigen gegevens lezen of wijzigen.
 
-In the Supabase dashboard for **AI Jarvis Learning**, open **Edge Functions → Secrets** and add:
+### AI-provider: bewust nog niet ingesteld
 
-- Name: `GEMINI_API_KEY`
-- Value: your Gemini API key from Google AI Studio: https://aistudio.google.com/app/apikey
+AI Jarvis wacht op een provider die geschikt is voor zowel de beheerder als minderjarige leerlingen. **Gebruik de Gemini API niet voor dit project**: de officiële Gemini API-voorwaarden bevatten een minimumleeftijd van 18 jaar en restricties voor diensten die op minderjarigen gericht zijn of waarschijnlijk door hen worden gebruikt. Zie https://ai.google.dev/gemini-api/terms.
 
-Optional secret: `GEMINI_TEXT_MODEL` (defaults to `gemini-3.8-flash`).
+Wanneer een geschikte provider en de account-/toestemmingsvereisten zijn bevestigd, voeg in Supabase Dashboard → **Edge Functions → Secrets** deze waarden toe:
 
-**Never put the Gemini key in `index.html`, a client-side environment variable, or a committed file.** The browser uses only the Supabase publishable key. The backend returns short-lived tokens for the Live API. Gemini API pricing and quotas depend on the Google account and model; Supabase Free does not make third-party model usage automatically free.
+- `AI_API_URL`: het volledige HTTPS-eindpunt van een OpenAI-compatibele Chat Completions API (inclusief `/chat/completions`).
+- `AI_API_KEY`: de geheime sleutel van de gekozen provider.
+- `AI_MODEL`: de exacte modelnaam die die API verwacht.
 
-### Authentication redirects
+De sleutel wordt alleen server-side gebruikt en is niet opgeslagen in dit GitHub-project. Kies geen betaalde provider zonder prijs en gebruikslimieten eerst te controleren. Supabase Free betekent niet dat externe AI-aanroepen automatisch gratis zijn.
 
-Users can create an account and sign in with email/password. If email confirmation is enabled, users need to click the confirmation link before logging in.
+### Accounts en e-mailbevestiging
 
-In Supabase Dashboard → **Authentication → URL Configuration**, add these redirect URLs:
+Gebruikers kunnen een account maken met e-mailadres en wachtwoord. Als e-mailbevestiging aanstaat, moet de bevestigingslink terug kunnen leiden naar Jarvis.
+
+Open Supabase Dashboard → **Authentication → URL Configuration** en voeg toe:
 - `https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/**`
 - `https://srtxzvvjtuuiwledxxok.supabase.co/functions/v1/jarvis-web`
 
-Chat history and generated study artifacts use Row Level Security policies so each signed-in user can access only their own rows.
+### Spraakmodus
 
-## Verified status
+Spraakmodus gebruikt de spraakherkenning en spraaksynthese van de browser en haalt daarna een antwoord op via de tekst-AI. Dit is een beurt-voor-beurt gesprek, geen volledig onderbreekbare telefoonachtige live-AI. Browser-spraakherkenning kan afhankelijk zijn van browserdiensten en microfoonrechten; behandel dit niet als gegarandeerd offline.
 
-- Database migrations are applied.
-- Tables `study_sessions`, `study_artifacts`, and `user_preferences` have RLS enabled.
-- A temporary probe confirmed the project's database event trigger enables RLS on new public tables; the probe table was dropped afterward.
-- Supabase security advisors currently report no security lints.
-- Edge Functions `jarvis-web`, `jarvis-chat`, and `jarvis-live-token` are deployed.
-- Chat and Live endpoints require valid Supabase authentication (JWT verification enabled).
-- The public preview endpoint serves only the frontend HTML and has no database-write behavior.
-- JavaScript syntax validation and the latest GitHub Pages deployment succeeded.
-- No AI provider secret is committed in the repository.
+## Gecontroleerde status
 
-## Remaining setup
+- Supabase-project is actief in de organisatie `Ai Jarvis`.
+- De drie eigen databasetabellen bestaan en RLS staat aan.
+- De databasebeveiligingsadviezen gaven geen openstaande security-lints bij de laatste controle.
+- De Edge Functions `jarvis-web`, `jarvis-chat` en `jarvis-live-token` zijn gepubliceerd.
+- `jarvis-chat` en `jarvis-live-token` vereisen geldige Supabase-authenticatie.
+- GitHub Actions heeft de publicatie van de website succesvol afgerond.
+- Er is geen AI-provider-secret in de repository opgenomen.
 
-- Set `GEMINI_API_KEY` in Supabase Secrets before expecting real AI answers or live voice.
-- Add the Authentication redirect URLs above before relying on email-confirmation redirects.
-- Live voice needs HTTPS and browser microphone permission.
+## Nog nodig
+
+1. Bevestig een AI-provider waarvan de voorwaarden onder-18 gebruik en beheer door een minderjarige toestaan; schakel zo nodig een ouder/voogd in.
+2. Voeg daarna `AI_API_URL`, `AI_API_KEY` en `AI_MODEL` als Supabase Secrets toe.
+3. Voeg de Authentication redirect-URL's hierboven toe en test aanmelden, e-mailbevestiging en opslaan.
