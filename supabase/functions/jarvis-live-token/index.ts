@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const allowedOrigins = new Set([
   "https://broodjefrikandelmetsaus.github.io",
+  "https://srtxzvvjtuuiwledxxok.supabase.co",
   "http://localhost:5500",
   "http://127.0.0.1:5500"
 ]);
