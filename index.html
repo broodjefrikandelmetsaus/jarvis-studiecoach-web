@@ -104,7 +104,7 @@ const knownSubjects = {
   'Maatschappijleer':['maatschappijleer','democratie','rechtsstaat','grondwet','politiek','verkiezingen'],
   'Techniek':['techniek','elektriciteit','3d printen','constructie','motor']
 };
-let authSession = null, currentUser = null, activeSessionId = null, localSessionKey = null, mode = 'tutor', messages = [], liveSocket = null, liveStream = null, liveAudio = null, liveSource = null, liveProcessor = null, liveActive = false, playbackCursor = 0, playbackNodes = [], liveInputText = '', liveOutputText = '', liveUserBubble = null, liveAssistantBubble = null, authMode = 'login', currentSubject = '', currentMaterial = '';
+let authSession = null, currentUser = null, activeSessionId = null, localSessionKey = null, historyChannel = null, mode = 'tutor', messages = [], liveSocket = null, liveStream = null, liveAudio = null, liveSource = null, liveProcessor = null, liveActive = false, playbackCursor = 0, playbackNodes = [], liveInputText = '', liveOutputText = '', liveUserBubble = null, liveAssistantBubble = null, authMode = 'login', currentSubject = '', currentMaterial = '';
 function safeLocalLoad(){ try { const result = JSON.parse(localStorage.getItem(localKey) || '[]'); return Array.isArray(result) ? result : []; } catch { return []; } }
 function safeLocalSave(item){ try { const arr=safeLocalLoad(); arr.unshift(item); localStorage.setItem(localKey,JSON.stringify(arr.slice(0,10))); } catch {} renderHistory(); }
 function esc(value){ return String(value == null ? '' : value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -278,10 +278,17 @@ async function applyAuthSession(session){
   const previousId=currentUser?.id||null;authSession=session||null;currentUser=session?.user||null;
   if(currentUser){
     $('loginBtn').textContent='Uitloggen';$('accountLabel').textContent='Ingelogd als '+(currentUser.email||'leerling');$('greeting').textContent='Welkom terug bij Jarvis.';setStatus('Ingelogd','var(--green)');
-    if(previousId!==currentUser.id){activeSessionId=null;await loadHistory();}
+    if(previousId!==currentUser.id){
+      if(historyChannel){try{await supabase.removeChannel(historyChannel);}catch{}historyChannel=null;}
+      activeSessionId=null;await loadHistory();
+      historyChannel=supabase.channel('jarvis-history-'+currentUser.id)
+        .on('postgres_changes',{event:'*',schema:'public',table:'study_sessions',filter:'user_id=eq.'+currentUser.id},()=>{loadHistory();})
+        .subscribe((status)=>{if(status==='SUBSCRIBED')$('historyStatus').textContent='Live gesynchroniseerd';});
+    }
     const {data:pref}=await supabase.from('user_preferences').select('display_name,preferred_subjects').eq('user_id',currentUser.id).maybeSingle();
     if(pref?.display_name)$('greeting').textContent='Welkom terug, '+pref.display_name+'.';
   }else{
+    if(historyChannel){try{await supabase.removeChannel(historyChannel);}catch{}historyChannel=null;}
     $('loginBtn').textContent='Inloggen';$('accountLabel').textContent='Log in om je geschiedenis veilig in de cloud te bewaren.';$('greeting').textContent='Waar gaan we vandaag aan werken?';setStatus('Niet ingelogd','var(--yellow)');activeSessionId=null;renderHistory();
   }
 }
