@@ -4,10 +4,17 @@ AI Jarvis is a Dutch-language, browser-based study coach for school Chromebooks;
 
 ## What's in this repository
 
-- `index.html`: responsive study-coach UI, sign-in/sign-up, chat, subject-detection hints, study modes, text material input, session history, and a browser client for Gemini Live API voice.
-- `supabase/functions/jarvis-chat/index.ts`: authenticated, server-side Gemini text tutor endpoint.
+- `index.html`: responsive study-coach UI, sign-in/sign-up, chat, subject-detection hints, study modes, text material input, session history, realtime session-history updates, and a browser client for Gemini Live API voice.
+- `supabase/functions/jarvis-web/index.ts`: public, read-only HTML preview endpoint.
+- `supabase/functions/jarvis-chat/index.ts`: authenticated server-side Gemini text tutor endpoint.
 - `supabase/functions/jarvis-live-token/index.ts`: authenticated ephemeral-token endpoint for Gemini Live API. The long-lived Gemini key never goes to the browser.
-- `supabase/migrations/`: schema and security SQL matching the changes applied to the cloud project.
+- `supabase/migrations/`: database schema and security SQL matching the changes applied to the cloud project.
+
+## Open the site
+
+**Preview URL:** https://srtxzvvjtuuiwledxxok.supabase.co/functions/v1/jarvis-web
+
+The preview is served by a public, read-only Supabase Edge Function. Authentication and AI features use separate authenticated endpoints. This is a direct preview; GitHub Pages is still being configured as the cleaner long-term static hosting option.
 
 ## Supabase project
 
@@ -22,7 +29,7 @@ AI Jarvis is a Dutch-language, browser-based study coach for school Chromebooks;
 In the Supabase dashboard for **AI Jarvis Learning**, open **Edge Functions → Secrets** and add:
 
 - Name: `GEMINI_API_KEY`
-- Value: your Gemini API key from Google AI Studio
+- Value: your Gemini API key from Google AI Studio: https://aistudio.google.com/app/apikey
 
 Optional secret: `GEMINI_TEXT_MODEL` (defaults to `gemini-3.8-flash`).
 
@@ -30,14 +37,17 @@ Optional secret: `GEMINI_TEXT_MODEL` (defaults to `gemini-3.8-flash`).
 
 ### Authentication
 
-Users can create an account and sign in with email/password. If email confirmation is enabled, users need to click the confirmation link before logging in. Chat history and generated study artefacts use Row Level Security policies so each signed-in user can access only their own rows.
+Users can create an account and sign in with email/password. If email confirmation is enabled, users need to click the confirmation link before logging in.
 
-In the Supabase dashboard, also open **Authentication → URL Configuration** and add this Redirect URL:
-`https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/**`
+In Supabase Dashboard → **Authentication → URL Configuration**, add these redirect URLs:
+- `https://srtxzvvjtuuiwledxxok.supabase.co/functions/v1/jarvis-web`
+- `https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/**`
+
+Chat history and generated study artifacts use Row Level Security policies so each signed-in user can access only their own rows.
 
 ## Deploy to GitHub Pages
 
-The repository has a GitHub Actions deployment workflow. **The first-time Pages setting still has to be enabled manually** because the connected GitHub integration cannot change repository administration settings:
+The repository has a GitHub Actions deployment workflow. First-time Pages configuration needs to be enabled manually because the connected GitHub integration cannot change repository administration settings:
 
 1. Open https://github.com/broodjefrikandelmetsaus/jarvis-studiecoach-web/settings/pages
 2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
@@ -46,20 +56,22 @@ The repository has a GitHub Actions deployment workflow. **The first-time Pages 
 
 Expected URL after a successful deployment: https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/
 
-The deployment workflow extracts the inline JavaScript module and runs `node --check` before deploying.
+The deployment workflow extracts the inline JavaScript module and runs `node --check` before deploying. JavaScript syntax validation has passed in recent workflow runs; the current blocker is repository Pages configuration permissions.
 
 ## Verified status
 
 - Database migrations are applied.
 - Tables `study_sessions`, `study_artifacts`, and `user_preferences` have RLS enabled.
 - A temporary probe confirmed the project's database event trigger enables RLS on new public tables; the probe table was dropped afterward.
-- Edge Functions `jarvis-chat` and `jarvis-live-token` are deployed with JWT verification enabled.
-- Frontend JavaScript syntax is checked in GitHub Actions.
+- Supabase security advisors currently report no security lints.
+- Edge Functions `jarvis-web`, `jarvis-chat`, and `jarvis-live-token` are deployed.
+- Chat and Live endpoints require valid Supabase authentication (JWT verification enabled).
+- The public preview endpoint serves only the frontend HTML and has no database-write behavior.
+- No AI provider secret is committed in the repository.
 
 ## Current remaining setup
 
-- Set `GEMINI_API_KEY` before expecting real AI answers or live voice.
-- Manually enable GitHub Pages once in repository settings; the GitHub connection cannot perform that admin setting.
-- Add the Supabase Auth redirect URL above.
+- Set `GEMINI_API_KEY` in Supabase Secrets before expecting real AI answers or live voice.
+- Add the Authentication redirect URLs above before relying on email confirmation redirects.
+- Enable GitHub Pages once in repository settings if you want the GitHub-hosted URL.
 - Live voice needs HTTPS and browser microphone permission.
-- No AI provider secret is committed in the repository.
