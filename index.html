@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>AI Jarvis — jouw studiecoach</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2d;--panel2:#182239;--line:#2b3854;--text:#f4f7ff;--muted:#9eacc8;--orange:#ff9e43;--blue:#8bb7ff;--green:#6ee7b7}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172542 0%,var(--bg) 58%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--text);background:var(--panel2)}button:hover{border-color:var(--orange)}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;max-width:1600px;margin:auto}.sidebar{padding:24px 16px;border-right:1px solid var(--line);background:#0b1120cc}.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 24px}.orb{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#ffb15c,#ff773d);display:grid;place-items:center;color:#17111a;font-weight:900;font-size:22px;box-shadow:0 0 30px #ff9e4333}.brand strong{font-size:19px;letter-spacing:.2px}.brand small{display:block;color:var(--muted);font-size:12px}.navlabel{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);padding:12px}.navbtn{display:block;width:100%;text-align:left;background:transparent;border-color:transparent;margin:3px 0;color:#dce5fa}.navbtn.active{background:#222e47;border-color:#36445f}.sidebarfoot{margin-top:auto;padding:18px 10px;color:var(--muted);font-size:12px}.sidebar{display:flex;flex-direction:column}.main{min-width:0;padding:28px clamp(16px,4vw,56px) 48px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:32px}.eyebrow{color:var(--orange);font-size:12px;text-transform:uppercase;letter-spacing:1.7px;font-weight:750}.topbar h1{font-size:clamp(25px,3vw,36px);line-height:1.15;margin:6px 0}.sub{color:var(--muted);margin:0}.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#11192a;padding:9px 12px;border-radius:999px;font-size:12px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:#fbbf24}.hero{border:1px solid #394660;background:linear-gradient(120deg,#1a2742,#141c30 65%,#241f32);border-radius:24px;padding:clamp(20px,4vw,34px);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;border:1px solid #ffffff0b;right:-80px;top:-90px;box-shadow:0 0 0 28px #ffffff04,0 0 0 58px #ffffff03}.hero h2{font-size:clamp(24px,3vw,34px);line-height:1.2;margin:10px 0}.hero p{max-width:640px;color:#bdc9e1}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.primary{background:var(--orange);border-color:var(--orange);color:#20140b;font-weight:800}.primary:hover{background:#ffb15c;color:#20140b}.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 30px}.tile,.section,.chatbox{background:#111a2d;border:1px solid var(--line);border-radius:18px;padding:18px}.tile{min-height:116px;text-align:left}.tile .emoji{font-size:23px}.tile strong{display:block;margin-top:12px}.tile small{color:var(--muted)}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.sectionhead h3{margin:0;font-size:18px}.sectionhead span{color:var(--muted);font-size:12px}.chatbox{padding:0;overflow:hidden}.chathead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.chathead strong{display:block}.chathead small{color:var(--muted)}.messages{padding:22px;min-height:200px;max-height:420px;overflow:auto;display:flex;flex-direction:column;gap:14px}.msg{max-width:min(720px,95%);padding:13px 15px;border-radius:16px;background:#1a2740;border:1px solid #2b3a58;white-space:pre-wrap}.msg.user{align-self:flex-end;background:#342b27;border-color:#69452f}.msg .who{font-size:11px;color:var(--orange);font-weight:800;margin-bottom:4px}.composer{padding:14px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-end}.composer textarea{resize:vertical;min-height:48px;max-height:140px;flex:1;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px}.hint{padding:0 18px 14px;color:var(--muted);font-size:12px}.lower{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:18px}.empty{color:var(--muted);font-size:14px}.notice{border:1px solid #6b542c;background:#302817;color:#ffe0a0;border-radius:12px;padding:12px 14px;margin-top:18px;font-size:13px}.modalback{position:fixed;inset:0;background:#020617cc;display:none;place-items:center;padding:16px;z-index:5}.modal{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px}.modal input{width:100%;margin:7px 0 14px;background:#0b1222;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px}.modal h2{margin-top:0}.modal p{color:var(--muted);font-size:14px}.mobilebrand{display:none}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.mobilebrand{display:flex;align-items:center;gap:10px}.main{padding:18px 14px 32px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.lower{grid-template-columns:1fr}.topbar{margin-bottom:20px}.hero{border-radius:18px}.messages{padding:15px;min-height:180px}.composer{flex-wrap:wrap}.composer textarea{flex-basis:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="orb">J</div><div><strong>AI Jarvis</strong><small>Jouw persoonlijke studiecoach</small></div></div>
+  <div class="navlabel">Werkruimte</div>
+  <button class="navbtn active" data-view="home">⌂ &nbsp; Overzicht</button>
+  <button class="navbtn" data-view="study">✦ &nbsp; Praat met Jarvis</button>
+  <button class="navbtn" data-view="quizzes">▤ &nbsp; Quiz & oefentoets</button>
+  <button class="navbtn" data-view="cards">▣ &nbsp; Flashcards</button>
+  <button class="navbtn" data-view="notes">✎ &nbsp; Samenvattingen</button>
+  <div class="navlabel">Persoonlijk</div>
+  <button class="navbtn" id="historyBtn">◷ &nbsp; Gespreksgeschiedenis</button>
+  <button class="navbtn" id="accountBtn">⚙ &nbsp; Account & instellingen</button>
+  <div class="sidebarfoot">AI Jarvis · Studie slimmer, niet langer.<br>Je voortgang hoort bij jouw account.</div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div><div class="mobilebrand"><div class="orb">J</div><strong>AI Jarvis</strong></div><div class="eyebrow">Jouw AI-leermaatje</div><h1 id="greeting">Waar gaan we vandaag aan werken?</h1><p class="sub">Leg het uit, stel extra vragen en oefen tot je het snapt.</p></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Instellen vereist</span></div><button id="loginBtn">Inloggen</button></div>
+  </div>
+  <section class="hero">
+    <div class="eyebrow">JARVIS STUDIEMODUS</div>
+    <h2>Niet alleen antwoorden.<br>Écht begrijpen.</h2>
+    <p>Jarvis helpt je de stof stap voor stap begrijpen, ontdekt waar je vastloopt en stelt een passende oefening voor. Begin met je vak, onderwerp of toetsweek.</p>
+    <div class="actions"><button class="primary" id="startBtn">✦ Start een studiesessie</button><button id="voiceBtn">🎙 Praat met Jarvis</button><button id="materialBtn">＋ Voeg leerstof toe</button></div>
+  </section>
+  <div class="tiles">
+    <button class="tile" data-mode="quiz"><span class="emoji">🧠</span><strong>Maak een quiz</strong><small>Test wat je al weet</small></button>
+    <button class="tile" data-mode="cards"><span class="emoji">🗂️</span><strong>Flashcards</strong><small>Leer begrippen actief</small></button>
+    <button class="tile" data-mode="exam"><span class="emoji">📝</span><strong>Oefentoets</strong><small>Oefen als op school</small></button>
+    <button class="tile" data-mode="summary"><span class="emoji">✨</span><strong>Samenvatting</strong><small>Hoofd- en bijzaken</small></button>
+  </div>
+  <div class="sectionhead"><h3>Jouw studiesessie</h3><span id="sessionLabel">Nieuwe sessie</span></div>
+  <section class="chatbox" id="chatbox">
+    <div class="chathead"><div><strong>Jarvis</strong><small id="chatSubtitle">Begin met wat je wilt leren</small></div><button id="newBtn">Nieuwe sessie</button></div>
+    <div class="messages" id="messages" aria-live="polite"><div class="msg"><div class="who">JARVIS</div>Hoi! Welk vak heb je, en welk onderwerp moet je kennen? Als je het nog niet precies weet, vertel me wanneer je toets is en dan zoeken we samen uit waar je moet beginnen.</div></div>
+    <div class="composer"><textarea id="prompt" rows="2" placeholder="Bijv. ‘Ik heb morgen biologie over cellen en ik snap osmose niet…’"></textarea><button id="sendBtn" class="primary">Verstuur ↗</button></div>
+    <div class="hint">Tip: je kunt ook je leerdoelen of tekst uit je boek plakken. Deel geen wachtwoorden of privégegevens.</div>
+  </section>
+  <div class="lower">
+    <section class="section"><div class="sectionhead"><h3>Verder leren</h3><span>Op dit apparaat</span></div><div id="recent" class="empty">Je recente sessies verschijnen hier zodra je begint.</div></section>
+    <section class="section"><div class="sectionhead"><h3>Leerstof toevoegen</h3><span>Tekst of bestand</span></div><p class="empty">Plak een stuk tekst uit je lesmateriaal of kies een tekstbestand om ermee te oefenen.</p><textarea id="material" rows="3" placeholder="Plak hier je leerstof, leerdoelen of aantekeningen…" style="width:100%;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px"></textarea><div class="actions"><label for="fileInput" style="border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer">Kies tekstbestand</label><input id="fileInput" type="file" accept=".txt,.md,.csv,text/plain,text/markdown" hidden><button id="useMaterial" class="primary">Gebruik deze leerstof</button></div><div id="fileLabel" class="empty"></div></section>
+  </div>
+  <div class="notice" id="setupNotice"><strong>Technische setup nog bezig.</strong> Dit is de eerste webversie. Login, cloudgeschiedenis en echte AI-/spraakverbinding worden pas actief nadat de veilige Supabase- en AI-koppelingen zijn ingesteld. Deze pagina doet niet alsof de AI al verbonden is.</div>
+</main>
+</div>
+<div class="modalback" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle"><div class="modal"><h2 id="loginTitle">Inloggen bij AI Jarvis</h2><p>Je account wordt gekoppeld zodra Supabase is ingesteld.</p><label for="email">E-mailadres</label><input id="email" type="email" autocomplete="email" placeholder="jij@voorbeeld.nl"><label for="password">Wachtwoord</label><input id="password" type="password" autocomplete="current-password" placeholder="Minimaal 8 tekens"><div class="actions"><button class="primary" id="authSubmit">Verder</button><button id="closeModal">Sluiten</button></div><p id="authMessage"></p></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const messages=$('messages'); let mode='tutor', materialText='', recognition=null, speaking=false;
+const localKey='ai-jarvis-local-v1';
+function localLoad(){try{return JSON.parse(localStorage.getItem(localKey)||'[]')}catch{return []}}
+function localSave(item){const arr=localLoad();arr.unshift(item);localStorage.setItem(localKey,JSON.stringify(arr.slice(0,8)));renderRecent()}
+function renderRecent(){const arr=localLoad();$('recent').innerHTML=arr.length?arr.map(x=>'<button style="display:block;width:100%;text-align:left;margin:6px 0" data-recent="'+encodeURIComponent(x.text)+'"><strong>'+escapeHtml(x.mode)+'</strong><br><small>'+escapeHtml(x.text.slice(0,85))+'</small></button>').join(''):'Je recente sessies verschijnen hier zodra je begint.'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addMessage(who,text){const el=document.createElement('div');el.className='msg '+(who==='Jij'?'user':'');const title=document.createElement('div');title.className='who';title.textContent=who.toUpperCase();const body=document.createElement('div');body.textContent=text;el.append(title,body);messages.append(el);messages.scrollTop=messages.scrollHeight}
+function setMode(m){mode=m;const labels={tutor:'Persoonlijke uitleg',quiz:'Quiz maken',cards:'Flashcards maken',exam:'Oefentoets maken',summary:'Samenvatting maken'};$('chatSubtitle').textContent=labels[m]||labels.tutor;$('sessionLabel').textContent=labels[m]||'Nieuwe sessie';$('prompt').focus();addMessage('Jarvis','Prima, we richten deze sessie op: '+labels[m]+'. Vertel me welk vak en onderwerp je wilt gebruiken. De AI-koppeling wordt nog ingesteld; ik kan je verzoek alvast klaarzetten.')}
+function send(){const text=$('prompt').value.trim();if(!text)return;$('prompt').value='';addMessage('Jij',text);localSave({mode:mode,text:text,at:new Date().toISOString()});$('statusText').textContent='AI-koppeling nog niet actief';$('statusDot').style.background='#fbbf24';addMessage('Jarvis','Ik heb je vraag lokaal op dit apparaat bewaard. De veilige AI-backend is nog niet gekoppeld, dus ik ga niet doen alsof ik je vraag al door een AI heb laten beantwoorden. Zodra de verbinding is ingesteld, kan Jarvis hier inhoudelijk op reageren.');}
+$('sendBtn').onclick=send;$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+$('startBtn').onclick=()=>{setMode('tutor');$('prompt').focus()};document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(b.dataset.view==='study')$('prompt').focus();else if(b.dataset.view==='quizzes')setMode('quiz');else if(b.dataset.view==='cards')setMode('cards');else if(b.dataset.view==='notes')setMode('summary');else window.scrollTo({top:0,behavior:'smooth'})});
+$('newBtn').onclick=()=>{messages.innerHTML='';addMessage('Jarvis','Nieuwe sessie gestart. Welk vak en onderwerp gaan we aanpakken?');$('prompt').value='';setMode('tutor')};
+$('historyBtn').onclick=()=>{renderRecent();$('recent').scrollIntoView({behavior:'smooth',block:'center'})};
+$('accountBtn').onclick=$('loginBtn').onclick=()=>{$('loginModal').style.display='grid';$('email').focus()};
+$('closeModal').onclick=()=>{$('loginModal').style.display='none'};
+$('authSubmit').onclick=()=>{$('authMessage').textContent='Login kan nog niet worden uitgevoerd: Supabase Auth is nog niet gekoppeld. Er is geen account aangemaakt.'};
+$('materialBtn').onclick=()=>{$('material').focus();$('material').scrollIntoView({behavior:'smooth',block:'center'})};
+$('useMaterial').onclick=()=>{materialText=$('material').value.trim();if(!materialText){$('material').focus();return}addMessage('Jij','Gebruik deze leerstof voor '+mode+':\n'+materialText.slice(0,4000));$('prompt').value='Gebruik de toegevoegde leerstof voor '+({quiz:'een quiz met antwoorden en uitleg',cards:'flashcards met vraag en antwoord',exam:'een oefentoets met nakijkmodel',summary:'een duidelijke samenvatting',tutor:'uitleg en controlevragen'}[mode]||'studiehulp')+'.';$('prompt').focus()};
+$('fileInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>1000000){$('fileLabel').textContent='Bestand is groter dan 1 MB. Plak liever alleen de relevante tekst.';return}materialText=await f.text();$('material').value=materialText;$('fileLabel').textContent='Gelezen: '+f.name+' ('+f.size+' bytes). Klik op “Gebruik deze leerstof”.'};
+$('voiceBtn').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){addMessage('Jarvis','Spraakherkenning wordt niet ondersteund in deze browser. Je kunt wel typen.');return}if(recognition){recognition.stop();recognition=null;$('voiceBtn').textContent='🎙 Praat met Jarvis';return}recognition=new SR();recognition.lang='nl-NL';recognition.interimResults=false;recognition.onresult=e=>{$('prompt').value=e.results[0][0].transcript;$('prompt').focus()};recognition.onerror=()=>addMessage('Jarvis','Ik kon de microfoon niet gebruiken. Controleer de browsertoestemming en probeer opnieuw.');recognition.onend=()=>{$('voiceBtn').textContent='🎙 Praat met Jarvis';recognition=null};recognition.start();$('voiceBtn').textContent='Luisteren… (klik om te stoppen)'};
+messages.addEventListener('click',e=>{const b=e.target.closest('[data-recent]');if(b){$('prompt').value=decodeURIComponent(b.dataset.recent);$('prompt').focus()}});
+renderRecent();
+</script>
+</body></html>
