@@ -173,10 +173,10 @@ function addToConversation(role,text){ messages.push({role,text,at:new Date().to
 async function readFunctionError(error){ if(error?.context && typeof error.context.json==='function'){try{const b=await error.context.json();if(b?.error)return b.error;}catch{}} return error?.message||'De aanvraag is mislukt.'; }
 async function sendMessage(){
   const text=$('prompt').value.trim(); if(!text)return;
+  if(!currentUser){ openAuth(); $('authMessage').textContent='Log in of maak een account om Jarvis te gebruiken. Je getypte vraag blijft staan.'; return; }
   $('prompt').value='';
   const guessed=detectSubject(text+' '+currentMaterial); if(guessed)currentSubject=guessed; $('sessionLabel').textContent='Bezig…';
   addToConversation('user',text); persistLocal();
-  if(!currentUser){ addToConversation('assistant','Log in om Jarvis echt te gebruiken en gesprekken te bewaren in de cloud. Je vraag staat voorlopig alleen lokaal op dit apparaat.'); $('sessionLabel').textContent='Alleen lokaal bewaard'; $('loginModal').style.display='grid'; return; }
   $('sendBtn').disabled=true; $('sendBtn').textContent='Denkt…'; setStatus('Jarvis denkt mee','var(--orange)');
   await persistSession();
   try{
