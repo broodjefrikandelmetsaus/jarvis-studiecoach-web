@@ -1,13 +1,13 @@
 # AI Jarvis — persoonlijke studiecoach
 
-AI Jarvis is een Dutch-language, browser-based study coach designed for school Chromebooks; no local app installation is required.
+AI Jarvis is a Dutch-language, browser-based study coach for school Chromebooks; no local app installation is required.
 
 ## What's in this repository
 
-- `index.html`: responsive study-coach UI, sign-in/sign-up, chat, subject detection hints, study modes, text material upload, session history, and a native browser Live API voice client.
-- `supabase/functions/jarvis-chat/index.ts`: authenticated server-side Gemini text tutor endpoint.
+- `index.html`: responsive study-coach UI, sign-in/sign-up, chat, subject-detection hints, study modes, text material input, session history, and a browser client for Gemini Live API voice.
+- `supabase/functions/jarvis-chat/index.ts`: authenticated, server-side Gemini text tutor endpoint.
 - `supabase/functions/jarvis-live-token/index.ts`: authenticated ephemeral-token endpoint for Gemini Live API. The long-lived Gemini key never goes to the browser.
-- `supabase/migrations/`: database schema and hardening SQL, matching the changes applied to the cloud project.
+- `supabase/migrations/`: schema and security SQL matching the changes applied to the cloud project.
 
 ## Supabase project
 
@@ -26,11 +26,14 @@ In the Supabase dashboard for **AI Jarvis Learning**, open **Edge Functions → 
 
 Optional secret: `GEMINI_TEXT_MODEL` (defaults to `gemini-3.8-flash`).
 
-**Never put the Gemini key in `index.html`, a GitHub secret that is exposed to client code, or a committed file.** The browser uses only the Supabase publishable key. The backend returns short-lived tokens for the Live API. Gemini API pricing/quotas depend on the Google account and model; the Supabase Free plan does not make third-party model usage automatically free.
+**Never put the Gemini key in `index.html`, a client-side environment variable, or a committed file.** The browser uses only the Supabase publishable key. The backend returns short-lived tokens for the Live API. Gemini API pricing and quotas depend on the Google account and model; Supabase Free does not make third-party model usage automatically free.
 
 ### Authentication
 
 Users can create an account and sign in with email/password. If email confirmation is enabled, users need to click the confirmation link before logging in. Chat history and generated study artefacts use Row Level Security policies so each signed-in user can access only their own rows.
+
+In the Supabase dashboard, also open **Authentication → URL Configuration** and add this Redirect URL:
+`https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/**`
 
 ## Deploy to GitHub Pages
 
@@ -43,11 +46,20 @@ The repository has a GitHub Actions deployment workflow. **The first-time Pages 
 
 Expected URL after a successful deployment: https://broodjefrikandelmetsaus.github.io/jarvis-studiecoach-web/
 
-The deployment workflow extracts the inline JavaScript module and runs `node --check` before deployment.
+The deployment workflow extracts the inline JavaScript module and runs `node --check` before deploying.
 
-## Current limitations / next features
+## Verified status
 
-- Set `GEMINI_API_KEY` before expecting real AI answers or voice conversations.
-- Live voice needs a browser that supports microphone access and secure HTTPS. Chrome on a Chromebook should work once the site is deployed and microphone permission is granted.
-- The first version uses a short-lived Gemini Live API token, bidirectional PCM audio, and output/input transcriptions. Full session recovery/resumption and cross-device realtime sync UI can be improved further.
-- No API secret is committed in this repository.
+- Database migrations are applied.
+- Tables `study_sessions`, `study_artifacts`, and `user_preferences` have RLS enabled.
+- A temporary probe confirmed the project's database event trigger enables RLS on new public tables; the probe table was dropped afterward.
+- Edge Functions `jarvis-chat` and `jarvis-live-token` are deployed with JWT verification enabled.
+- Frontend JavaScript syntax is checked in GitHub Actions.
+
+## Current remaining setup
+
+- Set `GEMINI_API_KEY` before expecting real AI answers or live voice.
+- Manually enable GitHub Pages once in repository settings; the GitHub connection cannot perform that admin setting.
+- Add the Supabase Auth redirect URL above.
+- Live voice needs HTTPS and browser microphone permission.
+- No AI provider secret is committed in the repository.
