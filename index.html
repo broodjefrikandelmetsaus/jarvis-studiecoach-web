@@ -123,7 +123,7 @@ body.effects-on .primary:focus-visible{box-shadow:0 0 0 4px var(--theme-soft)}
   <div class="notice" id="setupNotice"><strong>AI-koppeling wordt gecontroleerd.</strong> De site laat zien welke functies al verbonden zijn. De Gemini API-sleutel hoort uitsluitend in Supabase Secrets, nooit in GitHub of de browser.</div>
 </main>
 </div>
-<div class="modalback" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal settings-modal"><h2 id="settingsTitle">Jarvis-instellingen</h2><p>Kies een uiterlijk en stel de animaties in. Je voorkeuren worden op dit apparaat bewaard.</p><label for="themeSelect">Thema</label><select id="themeSelect" class="setting-select"><option value="orange">Jarvis-oranje</option><option value="blue">Ocean-blauw</option><option value="purple">Neon-paars</option><option value="green">Mint-groen</option></select><div class="setting-row"><div><strong>Ademend thema</strong><small>Een zachte, bewegende gloed op de achtergrond.</small></div><label class="switch"><input id="breathingToggle" type="checkbox"><span class="slider"></span></label></div><div class="setting-row"><div><strong>Extra interactie-effecten</strong><small>Korte animaties bij klikken en versturen.</small></div><label class="switch"><input id="effectsToggle" type="checkbox" checked><span class="slider"></span></label></div><div class="actions"><button class="primary" id="saveSettingsBtn">Instellingen opslaan</button><button id="closeSettingsBtn">Sluiten</button></div><p id="settingsMessage" role="status"></p></div></div>
+<div class="modalback" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="modal settings-modal"><h2 id="settingsTitle">Jarvis-instellingen</h2><p>Kies een uiterlijk en stel de animaties in. Je voorkeuren worden op dit apparaat bewaard.</p><label for="themeSelect">Thema</label><select id="themeSelect" class="setting-select"><option value="orange">Jarvis-oranje</option><option value="blue">Ocean-blauw</option><option value="purple">Neon-paars</option><option value="green">Mint-groen</option></select><label for="voiceSelect">Stem van Jarvis</label><select id="voiceSelect" class="setting-select"><option value="">Nederlandse standaardstem</option></select><label for="voiceRate">Spreeksnelheid</label><input id="voiceRate" type="range" min="0.75" max="1.25" step="0.05" value="0.96" class="setting-select"><label for="voicePitch">Toonhoogte</label><input id="voicePitch" type="range" min="0.7" max="1.3" step="0.05" value="1" class="setting-select"><div class="setting-row"><div><strong>Ademend thema</strong><small>Een zachte, bewegende gloed op de achtergrond.</small></div><label class="switch"><input id="breathingToggle" type="checkbox"><span class="slider"></span></label></div><div class="setting-row"><div><strong>Extra interactie-effecten</strong><small>Korte animaties bij klikken en versturen.</small></div><label class="switch"><input id="effectsToggle" type="checkbox" checked><span class="slider"></span></label></div><div class="actions"><button class="primary" id="saveSettingsBtn">Instellingen opslaan</button><button id="closeSettingsBtn">Sluiten</button></div><p id="settingsMessage" role="status"></p></div></div>
 <div class="modalback" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle"><div class="modal"><h2 id="loginTitle">Welkom bij AI Jarvis</h2><p id="authIntro">Log in om je gesprekken en voortgang privé op te slaan en Jarvis te gebruiken.</p><label for="email">E-mailadres</label><input id="email" type="email" autocomplete="email" placeholder="jij@voorbeeld.nl"><label for="password">Wachtwoord</label><input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="Minimaal 8 tekens"><div class="actions"><button class="primary" id="authSubmit">Inloggen</button><button id="toggleSignup">Account maken</button><button id="closeModal">Sluiten</button></div><p id="authMessage" role="status"></p></div></div>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.118.0';
@@ -330,7 +330,7 @@ function speakVoiceReply(text){
   }
   try{window.speechSynthesis.cancel();}catch{}
   const utterance=new SpeechSynthesisUtterance(String(text||'Ik heb geen antwoord om voor te lezen.'));
-  utterance.lang='nl-NL';utterance.rate=0.96;utterance.pitch=1;
+  const voicePrefs=readAppearance();utterance.lang='nl-NL';utterance.rate=Number(voicePrefs.voiceRate)||0.96;utterance.pitch=Number(voicePrefs.voicePitch)||1;const available=window.speechSynthesis.getVoices();const chosen=available.find(v=>v.voiceURI===voicePrefs.voice||v.name===voicePrefs.voice);if(chosen)utterance.voice=chosen;
   const resume=()=>{if(liveActive){liveWaitingForAnswer=false;setStatus('Spraakmodus actief','var(--green)');startRecognitionCycle();}};
   utterance.onend=resume;utterance.onerror=resume;
   window.speechSynthesis.speak(utterance);
@@ -436,12 +436,18 @@ function applyAppearance(settings){
 function readAppearance(){
   try{return Object.assign({theme:'orange',breathing:false,effects:true},JSON.parse(localStorage.getItem(settingsKey)||'{}'));}catch{return {theme:'orange',breathing:false,effects:true};}
 }
+function populateVoiceChoices(selected=''){
+ const select=$('voiceSelect');if(!select)return;const voices=('speechSynthesis'in window)?window.speechSynthesis.getVoices():[];select.innerHTML='<option value="">Nederlandse standaardstem</option>';
+ voices.filter(v=>/^nl([_-]|$)/i.test(v.lang)||/dutch|nederlands/i.test(v.name)).forEach(v=>{const opt=document.createElement('option');opt.value=v.voiceURI||v.name;opt.textContent=v.name+' ('+v.lang+')';select.append(opt);});
+ if(selected&&[...select.options].some(o=>o.value===selected))select.value=selected;
+}
+if('speechSynthesis'in window){populateVoiceChoices();window.speechSynthesis.onvoiceschanged=()=>populateVoiceChoices(readAppearance().voice||'');}
 function openSettings(){
-  const s=readAppearance();$('themeSelect').value=s.theme;$('breathingToggle').checked=s.breathing;$('effectsToggle').checked=s.effects;
+  const s=readAppearance();$('themeSelect').value=s.theme;$('breathingToggle').checked=s.breathing;$('effectsToggle').checked=s.effects;$('voiceRate').value=s.voiceRate||0.96;$('voicePitch').value=s.voicePitch||1;populateVoiceChoices(s.voice||'');
   $('settingsMessage').textContent='';$('settingsModal').style.display='grid';
 }
 function saveSettings(){
-  const s={theme:$('themeSelect').value,breathing:$('breathingToggle').checked,effects:$('effectsToggle').checked};
+  const s={theme:$('themeSelect').value,breathing:$('breathingToggle').checked,effects:$('effectsToggle').checked,voice:$('voiceSelect').value,voiceRate:Number($('voiceRate').value)||0.96,voicePitch:Number($('voicePitch').value)||1};
   try{localStorage.setItem(settingsKey,JSON.stringify(s));}catch{}
   applyAppearance(s);$('settingsMessage').textContent='Opgeslagen! Je nieuwe thema is actief.'; 
 }
@@ -539,34 +545,23 @@ function editArtifact(item){
 }
 let activeExam=null;let examBlurred=false;
 function parseExamQuestions(content){
- const lines=String(content||'').split(/\n/).map(s=>s.trim()).filter(Boolean);
- const out=[];let current=null;
- for(const line of lines){
-  const match=line.match(/^(?:vraag\s*)?(\d{1,2})[.)\-:]\s*(.+)$/i);
-  if(match){if(current)out.push(current);current={question:match[2],options:[]};continue}
-  if(current&&/^juiste antwoord:/i.test(line))continue;
-  if(current&&/^[A-D][.)]\s*/i.test(line)){current.options.push(line.replace(/^[A-D][.)]\s*/i,''));continue}
-  if(current)current.question+='\n'+line;else if(line.length>8)out.push({question:line,options:[]});
- }
- if(current)out.push(current);
- return out.length?out:[{question:'Beantwoord de vragen uit de toets hieronder.',options:[]}];
+ const raw=String(content||'');
+ try{const parsed=JSON.parse(raw);if(Array.isArray(parsed.questions))return parsed.questions.map(q=>({question:String(q.question||''),options:Array.isArray(q.options)?q.options.map(String):[],correctIndices:Array.isArray(q.correctIndices)?q.correctIndices:[],points:Math.max(0,Number(q.points)||1),open:!!q.open,expected:String(q.expected||'')}));}catch{}
+ const lines=raw.split(/\\n/).map(s=>s.trim()).filter(Boolean);const out=[];let current=null;
+ for(const line of lines){const match=line.match(/^(?:vraag\\s*)?(\\d{1,2})[.)\\-:]\\s*(.+)$/i);if(match){if(current)out.push(current);current={question:match[2],options:[],correctIndices:[],points:1,open:false,expected:''};continue;}if(current&&/^juiste antwoord:/i.test(line)){const keys=line.split(':').slice(1).join(':').split(/[;,]/).map(x=>x.trim().toUpperCase());current.correctIndices=keys.map(k=>k.charCodeAt(0)-65).filter(n=>n>=0&&n<26);continue;}if(current&&/^[A-Z][.)]\\s*/i.test(line)){current.options.push(line.replace(/^[A-Z][.)]\\s*/i,''));continue;}if(current)current.question+='\\n'+line;else if(line.length>8)out.push({question:line,options:[],correctIndices:[],points:1,open:true,expected:''});}
+ if(current)out.push(current);return out.length?out:[{question:'Beantwoord de vragen uit de toets hieronder.',options:[],correctIndices:[],points:1,open:true,expected:''}];
 }
 async function startExam(item){
- activeExam=item;examBlurred=false;
- $('examModeTitle').textContent=item.title;$('examContent').innerHTML='';
+ activeExam=item;examBlurred=false;$('examModeTitle').textContent=item.title;$('examContent').innerHTML='';
  const questions=parseExamQuestions(item.content);
- questions.forEach((q,i)=>{
-  const card=document.createElement('article');card.className='exam-question';
-  const heading=document.createElement('h3');heading.textContent=(i+1)+'. '+q.question;card.append(heading);
-  if(q.options.length){q.options.forEach((option,j)=>{const label=document.createElement('label');const input=document.createElement('input');input.type='radio';input.name='exam-q-'+i;input.value=option;label.append(input,document.createTextNode(' '+option));card.append(label)})}
-  else{const answer=document.createElement('textarea');answer.rows=3;answer.placeholder='Typ je antwoord hier…';answer.dataset.question=String(i);card.append(answer)}
-  $('examContent').append(card);
- });
- $('examProgress').textContent=questions.length+' vraag/vragen · Neem rustig de tijd.';
+ questions.forEach((q,i)=>{const card=document.createElement('article');card.className='exam-question';card.dataset.qindex=String(i);const heading=document.createElement('h3');heading.textContent=(i+1)+'. '+q.question+' ('+q.points+' punt'+(q.points===1?'':'en')+')';card.append(heading);
+ if(q.options.length){q.options.forEach((option,j)=>{const label=document.createElement('label');const input=document.createElement('input');input.type='checkbox';input.name='exam-q-'+i;input.value=String(j);input.dataset.option=String(j);label.append(input,document.createTextNode(' '+String.fromCharCode(65+j)+'. '+option));card.append(label)});const hint=document.createElement('small');hint.className='tiny';hint.textContent='Je kunt meerdere antwoorden selecteren.';card.append(hint);}
+ else{const answer=document.createElement('textarea');answer.rows=3;answer.placeholder='Typ je antwoord hier…';answer.dataset.question=String(i);card.append(answer)}
+ $('examContent').append(card);});
+ const total=questions.reduce((sum,q)=>sum+q.points,0);$('examProgress').textContent=questions.length+' vragen · '+total+' punten mogelijk.';
  $('examMode').classList.add('active');$('examMode').setAttribute('aria-hidden','false');
  try{if(!document.fullscreenElement&&$('examMode').requestFullscreen)await $('examMode').requestFullscreen();}catch{}
- if(!document.fullscreenElement){$('examModeStatus').textContent='Toetsvenster actief';}
- else $('examModeStatus').textContent='Volledig scherm actief';
+ $('examModeStatus').textContent=document.fullscreenElement?'Volledig scherm actief':'Toetsvenster actief';
 }
 function blurExam(reason){
  if(!$('examMode').classList.contains('active'))return;
@@ -582,71 +577,92 @@ $('examSubmitBtn').onclick=()=>finishExam(true);
 async function finishExam(submit){
  if(!activeExam)return;
  if(submit){
-  const answers=[...$('examContent').querySelectorAll('textarea')].map((x,i)=>({vraag:i+1,antwoord:x.value.trim()}));
-  const selected=[...$('examContent').querySelectorAll('input[type=radio]:checked')].map(x=>x.value);
-  const report={title:activeExam.title,finishedAt:new Date().toISOString(),answers,selected};
+  const questions=parseExamQuestions(activeExam.content);const feedback=[];let earned=0;let total=0;const openForAI=[];
+  questions.forEach((q,i)=>{const card=$('examContent').querySelector('[data-qindex="'+i+'"]');const selected=[...(card?.querySelectorAll('input[type=checkbox]:checked')||[])].map(x=>Number(x.value));const text=card?.querySelector('textarea')?.value.trim()||'';total+=q.points;let points=0;let status='open';
+   if(q.options.length){const expected=[...q.correctIndices].sort((a,b)=>a-b);const actual=[...selected].sort((a,b)=>a-b);const correct=expected.length>0&&expected.length===actual.length&&expected.every((v,j)=>v===actual[j]);if(correct)points=q.points;status=correct?'goed':'fout';}
+   else if(q.expected.trim()){openForAI.push({index:i,question:q.question,expected:q.expected,answer:text,points:q.points});status='AI nakijken';}
+   earned+=points;feedback.push({index:i,question:q.question,answer:text,selected,options:q.options,correctIndices:q.correctIndices,expected:q.expected,points,maxPoints:q.points,status,explanation:''});
+  });
+  let aiSummary='';
+  if(openForAI.length){
+   try{const prompt='Je bent een eerlijke Nederlandse docent. Beoordeel de open antwoorden van een leerling op basis van de antwoordmodellen. Geef per vraag punten tussen 0 en het maximum, korte begrijpelijke uitleg waarom, en beoordeel inhoudelijk (spelling alleen als relevant). Antwoord uitsluitend als JSON-array met objecten {"index":nummer,"points":getal,"explanation":"uitleg"}. Vragen: '+JSON.stringify(openForAI);
+    const {data,error}=await supabase.functions.invoke('jarvis-chat',{body:{messages:[{role:'user',text:prompt}],mode:'tutor',subject:currentSubject||'Algemeen',material:''}});
+    if(error)throw new Error(await readFunctionError(error));const answer=String(data?.answer||'');const match=answer.match(/\\[[\\s\\S]*\\]/);if(!match)throw new Error('Geen geldig nakijkresultaat ontvangen.');const graded=JSON.parse(match[0]);
+    graded.forEach(g=>{const f=feedback.find(x=>x.index===Number(g.index));if(!f)return;f.points=Math.max(0,Math.min(f.maxPoints,Number(g.points)||0));f.explanation=String(g.explanation||'');f.status=f.points>=f.maxPoints?'goed':f.points>0?'gedeeltelijk goed':'fout';});aiSummary='Open antwoorden zijn door Jarvis nagekeken.';
+   }catch(e){aiSummary='Open antwoorden konden niet automatisch worden nagekeken. Controleer ze zelf aan de hand van het antwoordmodel.';}
+  }
+  earned=feedback.reduce((sum,x)=>sum+x.points,0);const percent=total?Math.round(earned/total*100):0;
+  const report={title:activeExam.title,finishedAt:new Date().toISOString(),earned,total,percent,feedback,aiSummary};
   try{localStorage.setItem('jarvis-exam-result-'+activeExam.id,JSON.stringify(report))}catch{}
-  showNotice('Je antwoorden zijn op dit apparaat bewaard.','ok');
+  const result=document.createElement('div');result.className='exam-results';
+  const heading=document.createElement('h2');heading.textContent='Resultaat: '+percent+'%';result.append(heading);
+  const score=document.createElement('p');score.textContent=earned+' van de '+total+' punten · '+(percent>=55?'Voldoende volgens een eenvoudige 55%-grens':'Nog even oefenen');result.append(score);
+  if(aiSummary){const note=document.createElement('p');note.textContent=aiSummary;result.append(note);}
+  feedback.forEach((f,i)=>{const item=document.createElement('article');item.className='exam-question';const h=document.createElement('h3');h.textContent=(i+1)+'. '+f.question+' — '+f.points+'/'+f.maxPoints+' punten ('+f.status+')';item.append(h);
+   const your=document.createElement('p');your.textContent=f.options.length?'Jouw keuze: '+(f.selected.length?f.selected.map(n=>String.fromCharCode(65+n)+'. '+f.options[n]).join(', '):'geen antwoord'):'Jouw antwoord: '+(f.answer||'geen antwoord');item.append(your);
+   if(f.correctIndices.length){const correct=document.createElement('p');correct.textContent='Juiste antwoord(en): '+f.correctIndices.map(n=>String.fromCharCode(65+n)+'. '+f.options[n]).join(', ');item.append(correct);}
+   if(f.expected){const expected=document.createElement('p');expected.textContent='Antwoordmodel: '+f.expected;item.append(expected);}
+   if(f.explanation){const exp=document.createElement('p');exp.textContent='Uitleg van Jarvis: '+f.explanation;item.append(exp);}
+   result.append(item);
+  });
+  const close=document.createElement('button');close.className='primary';close.textContent='Resultaat sluiten';close.onclick=()=>{result.remove();closeExamOverlay();};result.append(close);
+  $('examContent').innerHTML='';$('examContent').append(result);$('examProgress').textContent='Toets nagekeken';$('examSubmitBtn').style.display='none';$('examExitBtn').textContent='Sluiten';$('examExitBtn').onclick=()=>{result.remove();closeExamOverlay();};$('examMode').classList.remove('blurred');$('examModeStatus').textContent='Resultaat';return;
  }
- $('examMode').classList.remove('active','blurred');$('examMode').setAttribute('aria-hidden','true');activeExam=null;examBlurred=false;
- if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen()}catch{}}
+ closeExamOverlay();
 }
+async function closeExamOverlay(){ $('examMode').classList.remove('active','blurred');$('examMode').setAttribute('aria-hidden','true');activeExam=null;examBlurred=false;$('examSubmitBtn').style.display='';$('examExitBtn').textContent='Toets beëindigen';$('examExitBtn').onclick=()=>{if(confirm('Weet je zeker dat je de toets wilt beëindigen?'))finishExam(false)};if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen()}catch{}}}
+let activeFormPage=null;
 function showCreateForm(){
- const page=document.body.dataset.page;if(!workspaceConfig[page])return;
+ const page=document.body.dataset.page;if(!workspaceConfig[page])return;activeFormPage=page;
  const root=$('workspaceTools');root.innerHTML='';
  const titleLabel=document.createElement('label');titleLabel.textContent='Titel / onderwerp';
- const title=document.createElement('input');title.placeholder=page==='cards'?'Bijv. Geschiedenis — begrippen':page==='quiz'?'Bijv. Hoofdstuk 3':'Bijv. Biologie — cellen';
- root.append(titleLabel,title);
+ const title=document.createElement('input');title.placeholder=page==='cards'?'Bijv. Geschiedenis — begrippen':page==='quiz'?'Bijv. Hoofdstuk 3':'Bijv. Biologie — cellen';root.append(titleLabel,title);
  const makeField=(parent,labelText,placeholder,tag='input')=>{const label=document.createElement('label');label.textContent=labelText;const field=document.createElement(tag);field.placeholder=placeholder;if(tag==='textarea')field.rows=3;parent.append(label,field);return field;};
- const addButton=(parent,text,handler)=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.onclick=handler;parent.append(b);return b;};
+ const addButton=(parent,text,handler,cls='')=>{const b=document.createElement('button');b.type='button';b.textContent=text;if(cls)b.className=cls;b.onclick=handler;parent.append(b);return b;};
  const editor=document.createElement('div');editor.className='study-editor';root.append(editor);
  const save=document.createElement('button');save.className='primary';save.textContent='Opslaan';save.style.marginTop='14px';
  const ask=document.createElement('button');ask.textContent='Laat Jarvis dit maken';ask.style.marginTop='14px';
  root.append(save,ask);
  const questionEditors=[];
- function addQuestion(){
+ function addQuestion(open=false){
   const n=questionEditors.length+1;const card=document.createElement('section');card.className='quiz-edit-card';
-  const head=document.createElement('h3');head.textContent='Vraag '+n;card.append(head);
-  const q=makeField(card,'Vraag','Typ hier de vraag…','textarea');
-  const optionFields=[];
-  if(page==='quiz'||page==='exam'){
+  const head=document.createElement('h3');head.textContent='Vraag '+n+(open?' · Open vraag':'');card.append(head);
+  const q=makeField(card,'Vraag','Typ hier de vraag…','textarea');const optionFields=[];const correctIndices=new Set();let pointsInput;
+  pointsInput=makeField(card,'Punten voor deze vraag','1','input');pointsInput.type='number';pointsInput.min='0';pointsInput.step='0.5';pointsInput.value='1';pointsInput.style.maxWidth='150px';
+  let expected=null;
+  if((page==='quiz'||page==='exam')&&!open){
+   const tip=document.createElement('p');tip.className='tiny';tip.textContent='Selecteer alle juiste antwoorden. Klik opnieuw op een geselecteerd bolletje om het uit te zetten.';card.append(tip);
    const grid=document.createElement('div');grid.className='answer-grid';
-   let correct=0;
-   for(let j=0;j<4;j++){
-    const wrap=document.createElement('label');wrap.className='answer-edit';
-    const radio=document.createElement('input');radio.type='radio';radio.name='correct-'+n;radio.value=String(j);radio.checked=j===0;radio.setAttribute('aria-label','Dit is het juiste antwoord');
-    const inp=document.createElement('input');inp.placeholder='Antwoord '+String.fromCharCode(65+j);inp.setAttribute('aria-label','Antwoord '+String.fromCharCode(65+j));
-    radio.onchange=()=>{correct=j};wrap.append(radio,inp);grid.append(wrap);optionFields.push(inp);
-   }
-   card.append(grid);card._getData=()=>({q:q.value.trim(),opts:optionFields.map(x=>x.value.trim()),correct});
-  }else card._getData=()=>({q:q.value.trim()});
+   function addOption(){const j=optionFields.length;const wrap=document.createElement('label');wrap.className='answer-edit';const check=document.createElement('input');check.type='checkbox';check.setAttribute('aria-label','Selecteer als juist antwoord');const inp=document.createElement('input');inp.placeholder='Antwoord '+String.fromCharCode(65+j);inp.setAttribute('aria-label','Antwoord '+String.fromCharCode(65+j));check.onchange=()=>{if(check.checked)correctIndices.add(j);else correctIndices.delete(j);};wrap.append(check,inp);grid.append(wrap);optionFields.push(inp);if(j>=4)inp.placeholder='Extra antwoord '+String.fromCharCode(65+j);}
+   for(let j=0;j<4;j++)addOption();card.append(grid);addButton(card,'＋ Antwoord toevoegen',addOption);
+   card._getData=()=>({question:q.value.trim(),options:optionFields.map(x=>x.value.trim()),correctIndices:[...correctIndices].filter(i=>optionFields[i]?.value.trim()),points:Math.max(0,Number(pointsInput.value)||0),open:false,expected:''});
+  }else{
+   expected=makeField(card,'Goed antwoord / antwoordmodel','Vul het antwoord in dat jij goed vindt…','textarea');
+   card._getData=()=>({question:q.value.trim(),options:[],correctIndices:[],points:Math.max(0,Number(pointsInput.value)||0),open:true,expected:expected.value.trim()});
+  }
   editor.append(card);questionEditors.push(card);
  }
  if(page==='cards'){
-  editor.className='flashcard-editor';
-  const hint=document.createElement('p');hint.textContent='Elk kaartje heeft twee kanten: links het begrip, rechts de betekenis. Voeg zoveel kaartjes toe als je nodig hebt.';editor.append(hint);
-  const cards=[];
-  function addCard(){
-   const row=document.createElement('div');row.className='flashcard-edit-row';
-   const term=makeField(row,'Begrip','Bijv. standenmaatschappij','input');
-   const meaning=makeField(row,'Betekenis','Leg het begrip uit in je eigen woorden','textarea');
-   editor.append(row);cards.push({term,meaning});
-  }
+  editor.className='flashcard-editor';const hint=document.createElement('p');hint.textContent='Elk kaartje heeft twee kanten: links het begrip, rechts de betekenis.';editor.append(hint);const cards=[];
+  function addCard(){const row=document.createElement('div');row.className='flashcard-edit-row';const term=makeField(row,'Begrip','Bijv. standenmaatschappij','input');const meaning=makeField(row,'Betekenis','Leg het begrip uit in je eigen woorden','textarea');editor.append(row);cards.push({term,meaning});}
   addButton(editor,'＋ Begrip toevoegen',addCard);addCard();
-  save.onclick=()=>{const valid=cards.filter(c=>c.term.value.trim()&&c.meaning.value.trim());if(!title.value.trim()||!valid.length){showNotice('Vul een titel en minimaal één volledig kaartje in.','error');return;}
-   const content=valid.map(c=>c.term.value.trim()+' | '+c.meaning.value.trim()).join('\n');
-   saveArtifacts([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),kind:page,title:title.value.trim(),content,createdAt:new Date().toISOString()} ,...getArtifacts()]);root.innerHTML='';renderArtifacts();showNotice('Flashcards opgeslagen op dit apparaat.','ok');};
+  save.onclick=()=>{const valid=cards.filter(c=>c.term.value.trim()&&c.meaning.value.trim());if(!title.value.trim()||!valid.length){showNotice('Vul een titel en minimaal één volledig kaartje in.','error');return;}const content=valid.map(c=>c.term.value.trim()+' | '+c.meaning.value.trim()).join('\\n');saveArtifacts([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),kind:page,title:title.value.trim(),content,createdAt:new Date().toISOString()},...getArtifacts()]);root.innerHTML='';activeFormPage=null;renderArtifacts();showNotice('Flashcards opgeslagen op dit apparaat.','ok');};
  }else if(page==='quiz'||page==='exam'){
-  const hint=document.createElement('p');hint.textContent=page==='quiz'?'Vul per vraag vier antwoorden in en selecteer het bolletje bij het juiste antwoord.':'Bouw je toets vraag voor vraag op. Selecteer bij meerkeuzevragen het juiste antwoord.';editor.append(hint);
-  addButton(editor,'＋ Vraag toevoegen',addQuestion);addQuestion();
-  save.onclick=()=>{const data=questionEditors.map(c=>c._getData()).filter(x=>x.q);if(!title.value.trim()||!data.length){showNotice('Vul een titel en minimaal één vraag in.','error');return;}
-   const content=data.map((d,i)=>{let lines='Vraag '+(i+1)+'. '+d.q;if(d.opts){lines+='\n'+d.opts.map((o,j)=>String.fromCharCode(65+j)+'. '+o).join('\n')+'\nJuiste antwoord: '+String.fromCharCode(65+d.correct); }return lines;}).join('\n\n');
-   saveArtifacts([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),kind:page,title:title.value.trim(),content,createdAt:new Date().toISOString()} ,...getArtifacts()]);root.innerHTML='';renderArtifacts();showNotice((page==='quiz'?'Quiz':'Oefentoets')+' opgeslagen op dit apparaat.','ok');};
+  const hint=document.createElement('p');hint.textContent=page==='quiz'?'Vul vragen en zoveel antwoordopties in als je wilt. Selecteer alle juiste antwoorden.':'Stel je oefentoets samen: standaard 1 punt per vraag, aanpasbaar. Meerkeuzevragen kunnen meerdere juiste antwoorden hebben.';editor.append(hint);
+  const weighting=makeField(editor,'Weging (optioneel)','Bijv. 2 voor dubbel gewicht','input');weighting.type='number';weighting.min='0';weighting.step='0.5';weighting.value='1';weighting.style.maxWidth='180px';
+  const questionButtons=document.createElement('div');questionButtons.className='actions';editor.append(questionButtons);
+  addButton(questionButtons,'＋ Meerkeuzevraag maken',()=>addQuestion(false),'primary');
+  addButton(questionButtons,'＋ Open vraag maken',()=>addQuestion(true));
+  addQuestion(false);
+  save.onclick=()=>{const data=questionEditors.map(c=>c._getData()).filter(x=>x.question);if(!title.value.trim()||!data.length){showNotice('Vul een titel en minimaal één vraag in.','error');return;}
+   const incomplete=data.some(q=>!q.open&&(!q.options.some(Boolean)||!q.correctIndices.length));if(incomplete){showNotice('Elke meerkeuzevraag heeft minimaal één antwoordoptie en één geselecteerd juist antwoord nodig.','error');return;}
+   const content=JSON.stringify({version:2,weighting:Math.max(0,Number(weighting.value)||1),questions:data});
+   saveArtifacts([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),kind:page,title:title.value.trim(),content,createdAt:new Date().toISOString()} ,...getArtifacts()]);root.innerHTML='';activeFormPage=null;renderArtifacts();showNotice((page==='quiz'?'Quiz':'Oefentoets')+' opgeslagen op dit apparaat.','ok');};
  }else{
   const content=makeField(editor,'Samenvatting','Schrijf of plak hier je samenvatting…','textarea');
-  save.onclick=()=>{if(!title.value.trim()||!content.value.trim()){showNotice('Vul een titel en inhoud in.','error');return;}saveArtifacts([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),kind:page,title:title.value.trim(),content:content.value.trim(),createdAt:new Date().toISOString()},...getArtifacts()]);root.innerHTML='';renderArtifacts();showNotice('Samenvatting opgeslagen op dit apparaat.','ok');};
+  save.onclick=()=>{if(!title.value.trim()||!content.value.trim()){showNotice('Vul een titel en inhoud in.','error');return;}saveArtifacts([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),kind:page,title:title.value.trim(),content:content.value.trim(),createdAt:new Date().toISOString()},...getArtifacts()]);root.innerHTML='';activeFormPage=null;renderArtifacts();showNotice('Samenvatting opgeslagen op dit apparaat.','ok');};
  }
- ask.onclick=()=>{const subject=title.value.trim()||$('subject').value||currentSubject||'Algemeen';const request=page==='cards'?'Maak 10 flashcards over '+subject+'. Geef iedere kaart exact op een nieuwe regel als: Begrip | Betekenis. Gebruik de geïmporteerde leerstof als die aanwezig is.':page==='quiz'?'Maak een quiz over '+subject+' met vragen, vier antwoordopties en markeer het juiste antwoord. Gebruik de geïmporteerde leerstof als die aanwezig is.':page==='exam'?'Maak een volledige oefentoets over '+subject+' met genummerde vragen, vier antwoordopties per meerkeuzevraag en een antwoordmodel. Gebruik de geïmporteerde leerstof als die aanwezig is.':'Maak een duidelijke samenvatting over '+subject+'.';setPage('tutor');$('prompt').value=request;sendMessage();};
+ ask.onclick=()=>{const subject=title.value.trim()||$('subject').value||currentSubject||'Algemeen';const request=page==='cards'?'Maak 10 flashcards over '+subject+'. Geef iedere kaart exact op een nieuwe regel als: Begrip | Betekenis. Gebruik de geïmporteerde leerstof als die aanwezig is.':page==='quiz'?'Maak een quiz over '+subject+' met vragen, meerdere antwoordopties en markeer alle juiste antwoorden. Gebruik de geïmporteerde leerstof als die aanwezig is.':page==='exam'?'Maak een volledige oefentoets over '+subject+' met meerkeuzevragen met meerdere mogelijke juiste antwoorden, open vragen met antwoordmodel en een puntwaarde per vraag. Geef de antwoorden duidelijk weer. Gebruik de geïmporteerde leerstof als die aanwezig is.':'Maak een duidelijke samenvatting over '+subject+'.';setPage('tutor');$('prompt').value=request;sendMessage();};
  title.focus();
 }
 function cfgMessage(page){return ({cards:'Flashcards',quiz:'Quiz',exam:'Oefentoets',summary:'Samenvatting'})[page]||'Item'}
@@ -672,7 +688,7 @@ function setPage(page){
  $('pageTitle').textContent=details[page][0];$('pageDescription').textContent=details[page][1];
  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===page));
  document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===page));
- if(workspaceConfig[page])renderArtifacts();
+ if(workspaceConfig[page]){renderArtifacts();if(activeFormPage!==page)showCreateForm();}
  if(page==='tutor'){$('chatbox').scrollIntoView({behavior:'smooth',block:'start'});}
  else window.scrollTo({top:0,behavior:'smooth'});
 }
