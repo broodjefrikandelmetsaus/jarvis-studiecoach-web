@@ -607,6 +607,7 @@ function setPage(page){
  else window.scrollTo({top:0,behavior:'smooth'});
 }
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=async()=>{const page=b.dataset.view;if(['quiz','cards','exam','summary'].includes(page))updateMode(page);setPage(page);if(page==='history')await loadHistory();if(page==='tutor')$('prompt').focus();});
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{const page=b.dataset.mode;if(['quiz','cards','exam','summary'].includes(page)){updateMode(page);setPage(page);}else{updateMode('tutor');setPage('tutor');}});
 $('historyBtn').onclick=async()=>{setPage('history');await loadHistory();};
 $('createArtifactBtn').onclick=showCreateForm;
 $('subject').onchange=()=>{if($('subject').value && $('subject').value!=='Anders')currentSubject=$('subject').value;else if(!$('subject').value)currentSubject='';};
