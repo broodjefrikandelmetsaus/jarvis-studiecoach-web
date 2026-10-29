@@ -198,9 +198,7 @@ async function sendMessage(textOverride=null, options={}){
     showNotice('Jarvis heeft geantwoord. Je gesprekken worden voor je account opgeslagen.','ok');
   }catch(e){
     const message=e?.message||'Onbekende fout.';
-    const friendly=message.includes('AI-provider')||message.includes('AI_API_')||message.includes('voorwaarden geschikt')?
-      'De AI-provider is nog niet ingesteld. Jarvis is klaar om aan een geschikte provider gekoppeld te worden.':
-      'Ik kon nu geen AI-antwoord ophalen. '+message;
+    const friendly=message;
     addToConversation('assistant',friendly);voiceText=friendly;
     setStatus('AI nog niet klaar','var(--yellow)');
     if(friendly.includes('AI-provider')||friendly.includes('geschikte provider'))showNotice('De website en login staan klaar. De tekst-AI staat bewust nog uit totdat een provider is gekozen die de voorwaarden voor de beheerder én minderjarige leerlingen toestaat. Gebruik geen Gemini API voor dit project.','error');
