@@ -8,6 +8,8 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.0/mammoth.browser.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"></script>
@@ -116,7 +118,7 @@ body.effects-on .primary:focus-visible{box-shadow:0 0 0 4px var(--theme-soft)}
   </section>
   <div class="lower" id="lowerSections">
     <section class="section"><div class="sectionhead"><h3>Verder leren</h3><span id="historyStatus">Lokale geschiedenis</span></div><div id="recent" class="empty">Je sessies verschijnen hier zodra je begint.</div></section>
-    <section class="section"><div class="sectionhead"><h3>Leerstof toevoegen</h3><span>Tekst of .txt</span></div><p class="empty">Plak leerdoelen, aantekeningen of tekst uit je boek. Jarvis gebruikt dit als context voor de sessie.</p><textarea id="material" rows="4" placeholder="Plak hier je leerstof, leerdoelen of aantekeningen…" style="width:100%;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px"></textarea><div class="actions"><label for="fileInput" class="filelabel">Kies tekstbestand</label><input id="fileInput" type="file" accept=".txt,.md,.csv,text/plain,text/markdown" hidden><button id="useMaterial" class="primary">Gebruik deze leerstof</button></div><div id="fileLabel" class="empty"></div></section>
+    <section class="section"><div class="sectionhead"><h3>Leerstof toevoegen</h3><span>Tekst of .txt</span></div><p class="empty">Plak leerdoelen, aantekeningen of tekst uit je boek. Jarvis gebruikt dit als context voor de sessie.</p><textarea id="material" rows="4" placeholder="Plak hier je leerstof, leerdoelen of aantekeningen…" style="width:100%;background:#0d1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px"></textarea><div class="actions"><label for="fileInput" class="filelabel">Kies tekstbestand</label><input id="fileInput" type="file" accept=".txt,.md,.csv,.pdf,.docx,text/plain,text/markdown,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden><button id="useMaterial" class="primary">Gebruik deze leerstof</button></div><div id="fileLabel" class="empty"></div></section>
   </div>
   <div class="notice" id="setupNotice"><strong>AI-koppeling wordt gecontroleerd.</strong> De site laat zien welke functies al verbonden zijn. De Gemini API-sleutel hoort uitsluitend in Supabase Secrets, nooit in GitHub of de browser.</div>
 </main>
@@ -479,7 +481,30 @@ $('voiceBtn').onclick=startLive;$('stopLiveBtn').onclick=stopLive;
 $('newBtn').onclick=newSession;
 $('materialBtn').onclick=()=>{$('material').focus();$('material').scrollIntoView({behavior:'smooth',block:'center'});};
 $('useMaterial').onclick=()=>{const text=$('material').value.trim();if(!text){$('material').focus();return;}currentMaterial=text.slice(0,12000);const guessed=detectSubject(text);if(guessed){currentSubject=guessed;if(!$('subject').value)$('subject').value=guessed;}const info='Leerstof toegevoegd ('+currentMaterial.length+' tekens). Je volgende vraag gebruikt deze tekst als context.';showNotice(info,'ok');$('prompt').value=$('prompt').value||'Help mij deze leerstof begrijpen. Wat zijn de belangrijkste punten?';$('prompt').focus();};
-$('fileInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>1000000){$('fileLabel').textContent='Bestand groter dan 1 MB. Plak alleen de relevante tekst in het vak.';return;}if(!/\.(txt|md|csv)$/i.test(f.name)){ $('fileLabel').textContent='Gebruik een tekstbestand (.txt, .md of .csv).';return;}const text=await f.text();$('material').value=text;$('fileLabel').textContent='Gelezen: '+f.name+' ('+f.size+' bytes). Klik op “Gebruik deze leerstof”.';};
+async function extractStudyFile(file){
+ const ext=file.name.toLowerCase().split('.').pop();
+ if(['txt','md','csv'].includes(ext))return await file.text();
+ if(ext==='docx'){
+  if(!window.mammoth)throw new Error('Word-import wordt nog geladen. Probeer opnieuw.');
+  const result=await window.mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});return result.value||'';
+ }
+ if(ext==='pdf'){
+  if(!window.pdfjsLib)throw new Error('PDF-import wordt nog geladen. Probeer opnieuw.');
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf=await window.pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;const pages=[];
+  for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const tc=await page.getTextContent();pages.push(tc.items.map(x=>x.str).join(' '));}
+  return pages.join('\n\n');
+ }
+ throw new Error('Gebruik TXT, MD, CSV, PDF of DOCX.');
+}
+$('fileInput').onchange=async e=>{
+ const files=[...(e.target.files||[])];if(!files.length)return;const pieces=[],errors=[];
+ for(const f of files){if(f.size>8*1024*1024){errors.push(f.name+' is groter dan 8 MB');continue;}
+  try{const value=await extractStudyFile(f);if(value.trim())pieces.push('=== '+f.name+' ===\n'+value.trim());else errors.push(f.name+': geen leesbare tekst gevonden (scans zijn niet ondersteund).');}
+  catch(err){errors.push(f.name+': '+(err.message||'kon niet worden gelezen'));}}
+ if(pieces.length){$('material').value=[$('material').value.trim(),...pieces].filter(Boolean).join('\n\n');$('fileLabel').textContent=pieces.length+' bestand(en) ingelezen. Klik op “Gebruik deze leerstof” om ze aan deze sessie te koppelen.';}
+ if(errors.length)showNotice(errors.join(' · '),'error');e.target.value='';
+};
 const artifactStorageKey='jarvis-artifacts-v1';
 let recognitionForMic=null;
 function getArtifacts(){try{return JSON.parse(localStorage.getItem(artifactStorageKey)||'[]')}catch{return []}}
