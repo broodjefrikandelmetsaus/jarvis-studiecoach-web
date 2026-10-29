@@ -121,26 +121,26 @@ function renderRichText(raw){
   const source=String(raw==null?'':raw);
   const blocks=[];
   // Bescherm blokformules tegen Markdown-parsing, zodat formules over meerdere regels intact blijven.
-  const protectedText=source.replace(/\\$\\$([\\s\\S]*?)\\$\\$/g,(_match,formula)=>{
+  const protectedText=source.replace(/\$\$([\s\S]*?)\$\$/g,(_match,formula)=>{
     const token='JARVISMATHBLOCK'+blocks.length+'TOKEN';
     blocks.push(formula.trim());
-    return '\\n\\n'+token+'\\n\\n';
+    return '\n\n'+token+'\n\n';
   });
   let html;
   if(window.marked && window.DOMPurify){
     html=window.marked.parse(protectedText,{gfm:true,breaks:true});
     blocks.forEach((formula,index)=>{
       const token='JARVISMATHBLOCK'+index+'TOKEN';
-      html=html.replace(token,'<div class="math-block">\\\\['+formula.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'\\\\]</div>');
+      html=html.replace(token,'<div class="math-block">\\['+formula.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'\\]</div>');
     });
     html=window.DOMPurify.sanitize(html);
   }else{
     html=protectedText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     blocks.forEach((formula,index)=>{
       const token='JARVISMATHBLOCK'+index+'TOKEN';
-      html=html.replace(token,'<div class="math-block">\\\\['+formula.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'\\\\]</div>');
+      html=html.replace(token,'<div class="math-block">\\['+formula.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'\\]</div>');
     });
-    html=html.replace(/\\n/g,'<br>');
+    html=html.replace(/\n/g,'<br>');
   }
   return html;
 }
@@ -148,10 +148,15 @@ function formatBubble(body,text){
   body.innerHTML=renderRichText(text);
   if(window.renderMathInElement){
     window.renderMathInElement(body,{delimiters:[
-      {left:'\\\\[',right:'\\\\]',display:true},
-      {left:'\\\\(',right:'\\\\)',display:false},
-      {left:'$',right:'$',display:true},
-      {left:'
+      {left:'$$',right:'$$',display:true},
+      {left:'\\[',right:'\\]',display:true},
+      {left:'\\(',right:'\\)',display:false},
+      {left:'$',right:'$',display:false}
+    ],throwOnError:false});
+  }
+}
+function appendBubble(role,text,klass){ const el=document.createElement('div'); el.className='msg'+(role==='user'?' user':'')+(klass?' '+klass:''); const who=document.createElement('div'); who.className='who'; who.textContent=role==='user'?'JIJ':'JARVIS'; const body=document.createElement('div'); body.className='body'; formatBubble(body,text); el.append(who,body); $('messages').append(el); $('messages').scrollTop=$('messages').scrollHeight; return el; }
+function updateBubble(el,text){ if(!el)return; const body=el.querySelector('.body'); if(body)formatBubble(body,text); $('messages').scrollTop=$('messages').scrollHeight; }
 function clearVisibleChat(){ $('messages').innerHTML=''; }
 function renderMessages(){ clearVisibleChat(); if(!messages.length){appendBubble('assistant','Hoi! Welk vak heb je, en welk onderwerp moet je kennen? Vertel me wat je al snapt en waar je vastloopt.');return;} messages.forEach(m=>appendBubble(m.role==='user'?'user':'assistant',m.text)); }
 function detectSubject(text){ const selected=$('subject').value; if(selected && selected!=='Anders')return selected; if(selected==='Anders')return 'Anders'; const hay=' '+String(text||'').toLowerCase()+' '; for(const [name,words] of Object.entries(knownSubjects)){ if(words.some(w=>hay.includes(w.toLowerCase()))) return name; } return ''; }
