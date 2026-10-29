@@ -506,12 +506,26 @@ async function extractStudyFile(file){
  throw new Error('Gebruik TXT, MD, CSV, PDF of DOCX.');
 }
 $('fileInput').onchange=async e=>{
- const files=[...(e.target.files||[])];if(!files.length)return;const pieces=[],errors=[];
- for(const f of files){if(f.size>8*1024*1024){errors.push(f.name+' is groter dan 8 MB');continue;}
-  try{const value=await extractStudyFile(f);if(value.trim())pieces.push('=== '+f.name+' ===\n'+value.trim());else errors.push(f.name+': geen leesbare tekst gevonden (scans zijn niet ondersteund).');}
-  catch(err){errors.push(f.name+': '+(err.message||'kon niet worden gelezen'));}}
- if(pieces.length){$('material').value=[$('material').value.trim(),...pieces].filter(Boolean).join('\n\n');const names=files.filter(f=>pieces.some(p=>p.startsWith('=== '+f.name+' ==='))).map(f=>f.name);$('fileLabel').textContent='Aan dezelfde leerstof toegevoegd: '+names.join(', ')+'. Kies gerust nog meer bestanden; alles blijft in deze studiesessie staan. Klik op “Gebruik deze leerstof” als je klaar bent.';}
- if(errors.length)showNotice(errors.join(' · '),'error');e.target.value='';
+ const files=[...(e.target.files||[])];if(!files.length)return;
+ const pieces=[],errors=[];let processed=0;
+ $('fileLabel').textContent='Bestanden verwerken: 0 van '+files.length+'…';
+ for(const f of files){
+  try{
+   if(f.size>8*1024*1024)throw new Error('groter dan 8 MB');
+   const value=await extractStudyFile(f);
+   if(!value.trim())throw new Error('geen leesbare tekst gevonden (scans zijn niet ondersteund)');
+   pieces.push('=== '+f.name+' ===\n'+value.trim());
+  }catch(err){errors.push(f.name+': '+(err.message||'kon niet worden gelezen'));}
+  processed++;
+  $('fileLabel').textContent='Bestanden verwerken: '+processed+' van '+files.length+'… ('+pieces.length+' succesvol)';
+ }
+ if(pieces.length){
+  $('material').value=[$('material').value.trim(),...pieces].filter(Boolean).join('\n\n');
+  $('fileLabel').textContent=pieces.length+' bestand(en) toegevoegd aan dezelfde leerstof: '+files.filter(f=>pieces.some(p=>p.startsWith('=== '+f.name+' ==='))).map(f=>f.name).join(', ')+'. Je kunt nog meer bestanden selecteren; klik op “Gebruik deze leerstof” als je klaar bent.';
+ }
+ if(errors.length)showNotice('Niet alle bestanden konden worden ingelezen: '+errors.join(' · '),'error');
+ if(!pieces.length&&!errors.length)$('fileLabel').textContent='Geen bestanden ingelezen.';
+ e.target.value='';
 };
 const artifactStorageKey='jarvis-artifacts-v1';
 let recognitionForMic=null;
