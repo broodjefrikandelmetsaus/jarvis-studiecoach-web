@@ -488,7 +488,7 @@ $('startBtn').onclick=()=>{setPage('tutor');$('prompt').focus();};
 $('voiceBtn').onclick=startLive;$('stopLiveBtn').onclick=stopLive;
 $('newBtn').onclick=newSession;
 $('materialBtn').onclick=()=>{$('material').focus();$('material').scrollIntoView({behavior:'smooth',block:'center'});};
-$('useMaterial').onclick=()=>{const text=$('material').value.trim();if(!text){$('material').focus();return;}currentMaterial=text.slice(0,12000);const guessed=detectSubject(text);if(guessed){currentSubject=guessed;if(!$('subject').value)$('subject').value=guessed;}const info='Leerstof toegevoegd ('+currentMaterial.length+' tekens). Je volgende vraag gebruikt deze tekst als context.';showNotice(info,'ok');$('prompt').value=$('prompt').value||'Help mij deze leerstof begrijpen. Wat zijn de belangrijkste punten?';$('prompt').focus();};
+$('useMaterial').onclick=()=>{const text=$('material').value.trim();if(!text){$('material').focus();return;}currentMaterial=text;const guessed=detectSubject(text);if(guessed){currentSubject=guessed;if(!$('subject').value)$('subject').value=guessed;}const info='Alle leerstof in deze sessie is gekoppeld ('+currentMaterial.length+' tekens). Je kunt meer bestanden toevoegen; ze worden aan dezelfde leerstof toegevoegd. Je hoeft geen nieuwe chat te starten.';showNotice(info,'ok');$('prompt').value=$('prompt').value||'Help mij deze leerstof begrijpen. Wat zijn de belangrijkste punten?';$('prompt').focus();};
 async function extractStudyFile(file){
  const ext=file.name.toLowerCase().split('.').pop();
  if(['txt','md','csv'].includes(ext))return await file.text();
@@ -510,7 +510,7 @@ $('fileInput').onchange=async e=>{
  for(const f of files){if(f.size>8*1024*1024){errors.push(f.name+' is groter dan 8 MB');continue;}
   try{const value=await extractStudyFile(f);if(value.trim())pieces.push('=== '+f.name+' ===\n'+value.trim());else errors.push(f.name+': geen leesbare tekst gevonden (scans zijn niet ondersteund).');}
   catch(err){errors.push(f.name+': '+(err.message||'kon niet worden gelezen'));}}
- if(pieces.length){$('material').value=[$('material').value.trim(),...pieces].filter(Boolean).join('\n\n');const names=files.filter(f=>pieces.some(p=>p.startsWith('=== '+f.name+' ==='))).map(f=>f.name);$('fileLabel').textContent='Toegevoegd: '+names.join(', ')+'. Totaal '+pieces.length+' bestand(en) uit deze selectie. Je kunt opnieuw bestanden kiezen om ze erbij te zetten. Klik daarna op “Gebruik deze leerstof”.';}
+ if(pieces.length){$('material').value=[$('material').value.trim(),...pieces].filter(Boolean).join('\n\n');const names=files.filter(f=>pieces.some(p=>p.startsWith('=== '+f.name+' ==='))).map(f=>f.name);$('fileLabel').textContent='Aan dezelfde leerstof toegevoegd: '+names.join(', ')+'. Kies gerust nog meer bestanden; alles blijft in deze studiesessie staan. Klik op “Gebruik deze leerstof” als je klaar bent.';}
  if(errors.length)showNotice(errors.join(' · '),'error');e.target.value='';
 };
 const artifactStorageKey='jarvis-artifacts-v1';
