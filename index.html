@@ -58,6 +58,8 @@ body.effects-on .primary:focus-visible{box-shadow:0 0 0 4px var(--theme-soft)}
 @media(prefers-reduced-motion:reduce){body.breathing:before,body.breathing .orb,body.breathing .hero,body.effects-on #sendBtn.send-burst,body.effects-on #chatbox.send-flash,button.ripple-active:after{animation:none!important}}
 @media(max-width:900px){.mobile-nav{display:flex;gap:6px;overflow-x:auto;padding:4px 0 14px;margin-bottom:10px}.mobile-nav .navbtn{white-space:nowrap;flex:0 0 auto;width:auto;margin:0;padding:8px 11px;font-size:13px}.top-actions{gap:6px}.top-actions .status{order:3;width:100%;justify-content:center}.top-actions button{padding:8px 10px;font-size:13px}.app{grid-template-columns:1fr}.sidebar{display:none}.mobilebrand{display:flex;align-items:center;gap:10px;margin-bottom:7px}.main{padding:17px 13px 30px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lower{grid-template-columns:1fr}.topbar{margin-bottom:19px}.hero{border-radius:18px}.messages{padding:14px;min-height:185px}.composer{flex-wrap:wrap}.composer textarea{flex-basis:100%}.controls .subject-select{width:138px}.status{font-size:11px}.chathead{padding:13px}.chathead #newBtn{padding:8px 10px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.exam-results>h2{font-size:clamp(28px,5vw,42px);color:var(--green);margin:8px 0}.exam-results>p{color:var(--muted)}.exam-results .exam-question{margin-top:14px}.exam-results .exam-question p{overflow-wrap:anywhere}.quiz-preview-card{padding:12px;border:1px solid var(--line);border-radius:12px;margin:10px 0;background:#111a2d}.quiz-preview-answer{padding:9px;border:1px solid var(--line);border-radius:9px}.exam-question input[type=checkbox]{accent-color:var(--orange);width:17px;height:17px;margin-right:8px}
 </style>
 </head>
 <body>
@@ -594,9 +596,9 @@ async function finishExam(submit){
   earned=feedback.reduce((sum,x)=>sum+x.points,0);const percent=total?Math.round(earned/total*100):0;
   const report={title:activeExam.title,finishedAt:new Date().toISOString(),earned,total,percent,feedback,aiSummary};
   try{localStorage.setItem('jarvis-exam-result-'+activeExam.id,JSON.stringify(report))}catch{}
-  const result=document.createElement('div');result.className='exam-results';
+  let examWeight=1;try{examWeight=Number(JSON.parse(activeExam.content).weighting)||1;}catch{}const result=document.createElement('div');result.className='exam-results';
   const heading=document.createElement('h2');heading.textContent='Resultaat: '+percent+'%';result.append(heading);
-  const score=document.createElement('p');score.textContent=earned+' van de '+total+' punten · '+(percent>=55?'Voldoende volgens een eenvoudige 55%-grens':'Nog even oefenen');result.append(score);
+  const score=document.createElement('p');score.textContent=earned+' van de '+total+' punten · Weging: '+examWeight+' · '+(percent>=55?'Voldoende volgens een eenvoudige 55%-grens':'Nog even oefenen');result.append(score);
   if(aiSummary){const note=document.createElement('p');note.textContent=aiSummary;result.append(note);}
   feedback.forEach((f,i)=>{const item=document.createElement('article');item.className='exam-question';const h=document.createElement('h3');h.textContent=(i+1)+'. '+f.question+' — '+f.points+'/'+f.maxPoints+' punten ('+f.status+')';item.append(h);
    const your=document.createElement('p');your.textContent=f.options.length?'Jouw keuze: '+(f.selected.length?f.selected.map(n=>String.fromCharCode(65+n)+'. '+f.options[n]).join(', '):'geen antwoord'):'Jouw antwoord: '+(f.answer||'geen antwoord');item.append(your);
