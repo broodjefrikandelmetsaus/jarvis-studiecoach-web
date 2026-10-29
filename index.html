@@ -329,7 +329,6 @@ supabase.auth.onAuthStateChange((_event,session)=>{queueMicrotask(()=>applyAuthS
 const {data:{session}}=await supabase.auth.getSession();await applyAuthSession(session);
 updateMode('tutor');
 if(currentUser){await loadHistory();}else renderHistory();
-showNotice('Database en accounts zijn gekoppeld. De tekst-AI is nog niet geactiveerd: kies eerst een provider waarvan de voorwaarden gebruik door de beheerder én minderjarige leerlingen toestaan. Gebruik voor dit project geen Gemini API.','error');
 </script>
 </body>
 </html>
